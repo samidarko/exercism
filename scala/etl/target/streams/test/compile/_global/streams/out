@@ -1,0 +1,13 @@
+[0m[[0m[31merror[0m] [0m[0m/Users/vincentdupont/Exercism/scala/etl/src/test/scala/EtlTest.scala:7:9: value transform is not a member of object Etl[0m
+[0m[[0m[31merror[0m] [0m[0m    Etl.transform(Map(1 -> Seq("A"))) should be(Map("a" -> 1))[0m
+[0m[[0m[31merror[0m] [0m[0m        ^[0m
+[0m[[0m[31merror[0m] [0m[0m/Users/vincentdupont/Exercism/scala/etl/src/test/scala/EtlTest.scala:12:9: value transform is not a member of object Etl[0m
+[0m[[0m[31merror[0m] [0m[0m    Etl.transform(Map(1 -> Seq("A", "E", "I", "O", "U"))) should be(Map("a" -> 1,[0m
+[0m[[0m[31merror[0m] [0m[0m        ^[0m
+[0m[[0m[31merror[0m] [0m[0m/Users/vincentdupont/Exercism/scala/etl/src/test/scala/EtlTest.scala:18:9: value transform is not a member of object Etl[0m
+[0m[[0m[31merror[0m] [0m[0m    Etl.transform(Map(1 -> Seq("A", "E"), 2 -> Seq("D", "G"))) should be(Map("a" -> 1,[0m
+[0m[[0m[31merror[0m] [0m[0m        ^[0m
+[0m[[0m[31merror[0m] [0m[0m/Users/vincentdupont/Exercism/scala/etl/src/test/scala/EtlTest.scala:24:9: value transform is not a member of object Etl[0m
+[0m[[0m[31merror[0m] [0m[0m    Etl.transform(Map(1 -> Seq("A", "E", "I", "O", "U", "L", "N", "R", "S", "T"),[0m
+[0m[[0m[31merror[0m] [0m[0m        ^[0m
+[0m[[0m[31merror[0m] [0m[0mfour errors found[0m

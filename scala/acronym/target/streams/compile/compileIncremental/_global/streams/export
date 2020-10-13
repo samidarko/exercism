@@ -1,0 +1,1 @@
+scalac -bootclasspath /Users/vincentdupont/.coursier/cache/v1/https/repo1.maven.org/maven2/org/scala-lang/scala-library/2.12.8/scala-library-2.12.8.jar -classpath /Users/vincentdupont/Exercism/scala/acronym/target/scala-2.12/classes /Users/vincentdupont/Exercism/scala/acronym/src/main/scala/Acronym.scala

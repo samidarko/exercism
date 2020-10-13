@@ -1,0 +1,7 @@
+[0m[[0m[31merror[0m] [0m[0m/Users/vincentdupont/Exercism/scala/two-fer/src/main/scala/Twofer.scala:3:20: '(' expected but identifier found.[0m
+[0m[[0m[31merror[0m] [0m[0m    s"One for ${if name.isEmpty "You" else name}, one for me."[0m
+[0m[[0m[31merror[0m] [0m[0m                   ^[0m
+[0m[[0m[31merror[0m] [0m[0m/Users/vincentdupont/Exercism/scala/two-fer/src/main/scala/Twofer.scala:3:48: illegal start of simple expression[0m
+[0m[[0m[31merror[0m] [0m[0m    s"One for ${if name.isEmpty "You" else name}, one for me."[0m
+[0m[[0m[31merror[0m] [0m[0m                                               ^[0m
+[0m[[0m[31merror[0m] [0m[0mtwo errors found[0m

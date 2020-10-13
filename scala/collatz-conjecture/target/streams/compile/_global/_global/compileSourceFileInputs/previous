@@ -1,0 +1,1 @@
+["sbt.Task[scala.collection.immutable.Map[java.lang.String, scala.collection.Seq[scala.Tuple2[java.nio.file.Path, sbt.nio.FileStamp]]]]",{"2.12.8":{"hashes":[["/Users/vincentdupont/Exercism/scala/collatz-conjecture/src/main/scala/CollatzConjecture.scala","1c5d088a5829d4bf82ce3ab788c56185514322be"]],"lastModifiedTimes":[]}}]

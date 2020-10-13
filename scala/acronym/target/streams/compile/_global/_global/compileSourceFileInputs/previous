@@ -1,0 +1,1 @@
+["sbt.Task[scala.collection.immutable.Map[java.lang.String, scala.collection.Seq[scala.Tuple2[java.nio.file.Path, sbt.nio.FileStamp]]]]",{"2.12.8":{"hashes":[["/Users/vincentdupont/Exercism/scala/acronym/src/main/scala/Acronym.scala","f29996a95e2a552f0b4d8e06b7dbc65a7a7390d1"]],"lastModifiedTimes":[]}}]

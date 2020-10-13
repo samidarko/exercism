@@ -1,0 +1,12 @@
+[0m[[0m[0minfo[0m] [0m[0m[32mWordCountTest:[0m[0m
+[0m[[0m[0minfo[0m] [0m[0m[32m- count one word[0m[0m
+[0m[[0m[0minfo[0m] [0m[0m[32m- count one of each word[0m[0m
+[0m[[0m[0minfo[0m] [0m[0m[32m- multiple occurrences of a word[0m[0m
+[0m[[0m[0minfo[0m] [0m[0m[32m- handles cramped lists[0m[0m
+[0m[[0m[0minfo[0m] [0m[0m[32m- handles expanded lists[0m[0m
+[0m[[0m[0minfo[0m] [0m[0m[32m- ignore punctuation[0m[0m
+[0m[[0m[0minfo[0m] [0m[0m[32m- include numbers[0m[0m
+[0m[[0m[0minfo[0m] [0m[0m[32m- normalize case[0m[0m
+[0m[[0m[0minfo[0m] [0m[0m[32m- with apostrophes[0m[0m
+[0m[[0m[0minfo[0m] [0m[0m[32m- with quotations[0m[0m
+[0m[[0m[0minfo[0m] [0m[0m[32m- multiple spaces not detected as a word[0m[0m

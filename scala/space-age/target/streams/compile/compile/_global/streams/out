@@ -1,0 +1,4 @@
+[0m[[0m[31merror[0m] [0m[0m/Users/vincentdupont/Exercism/scala/space-age/src/main/scala/SpaceAge.scala:3:28: Invalid literal number[0m
+[0m[[0m[31merror[0m] [0m[0m  val earthOrbitalPeriod = 31_557_600[0m
+[0m[[0m[31merror[0m] [0m[0m                           ^[0m
+[0m[[0m[31merror[0m] [0m[0mone error found[0m

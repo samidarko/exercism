@@ -1,0 +1,1 @@
+["sbt.Task[scala.collection.immutable.Map[java.lang.String, scala.collection.Seq[scala.Tuple2[java.nio.file.Path, sbt.nio.FileStamp]]]]",{"2.12.8":{"hashes":[["/Users/vincentdupont/Exercism/scala/rna-transcription/src/test/scala/RnaTranscriptionTest.scala","f26904634147b196875fa75f33744ca3aaaea6b8"]],"lastModifiedTimes":[]}}]

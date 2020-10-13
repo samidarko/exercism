@@ -1,0 +1,9 @@
+[0m[[0m[0minfo[0m] [0m[0m[32mAcronymTest:[0m[0m
+[0m[[0m[0minfo[0m] [0m[0m[32m- basic[0m[0m
+[0m[[0m[0minfo[0m] [0m[0m[32m- lowercase words[0m[0m
+[0m[[0m[0minfo[0m] [0m[0m[32m- punctuation[0m[0m
+[0m[[0m[0minfo[0m] [0m[0m[32m- all caps word[0m[0m
+[0m[[0m[0minfo[0m] [0m[0m[32m- punctuation without whitespace[0m[0m
+[0m[[0m[0minfo[0m] [0m[0m[32m- very long abbreviation[0m[0m
+[0m[[0m[0minfo[0m] [0m[0m[32m- consecutive delimiters[0m[0m
+[0m[[0m[0minfo[0m] [0m[0m[32m- apostrophes[0m[0m
