@@ -11,11 +11,11 @@ func IsIsogram(word string) bool {
 		if r == '-' || r == ' ' {
 			continue
 		}
-		runesOccurence := runesOccurences[r]
-		if runesOccurence == 1 {
+		runesOccurrence := runesOccurences[r]
+		if runesOccurrence == 1 {
 			return false
 		}
-		runesOccurences[r] = runesOccurence + 1
+		runesOccurences[r] = runesOccurrence + 1
 	}
 	return true
 }
