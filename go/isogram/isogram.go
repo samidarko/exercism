@@ -6,16 +6,15 @@ import (
 
 // IsIsogram takes a word and returns true if word is an isogram otherwise false
 func IsIsogram(word string) bool {
-	runesOccurences := map[rune]int{}
+	runeOccurred := map[rune]bool{}
 	for _, r := range strings.ToLower(word) {
 		if r == '-' || r == ' ' {
 			continue
 		}
-		runesOccurrence := runesOccurences[r]
-		if runesOccurrence == 1 {
+		if runeOccurred[r] {
 			return false
 		}
-		runesOccurences[r] = runesOccurrence + 1
+		runeOccurred[r] = true
 	}
 	return true
 }
