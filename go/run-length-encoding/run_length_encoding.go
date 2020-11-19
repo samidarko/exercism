@@ -3,6 +3,7 @@ package encode
 import (
 	"fmt"
 	"strconv"
+	"strings"
 	"unicode"
 )
 
@@ -60,21 +61,11 @@ func RunLengthDecode(s string) (decoding string) {
 
 // Decode the code
 func Decode(character rune, number []rune) string {
-
 	if len(number) == 0 {
 		return fmt.Sprintf("%c", character)
 	}
-
-	resultSize, err := strconv.Atoi(string(number))
-
-	if err != nil {
+	if repetition, err := strconv.Atoi(string(number)); err == nil {
+		return strings.Repeat(string(character), repetition)
 	}
-
-	decoding := make([]rune, resultSize, resultSize)
-
-	for i := 0; i < resultSize; i++ {
-		decoding[i] = character
-	}
-
-	return string(decoding)
+	return ""
 }
