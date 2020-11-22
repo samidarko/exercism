@@ -19,7 +19,7 @@ func WordCount(sentence string) Frequency {
 	for _, word := range splitSentence {
 		word = strings.Trim(word, "'")
 		if word != "" {
-			frequency[word] = frequency[word] + 1
+			frequency[word]++
 		}
 	}
 
