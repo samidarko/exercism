@@ -5,8 +5,10 @@ import (
 	"strings"
 )
 
+// Frequency type
 type Frequency = map[string]int
 
+// WordCount count words for a given sentence and return a Frequency
 func WordCount(sentence string) Frequency {
 
 	var frequency = make(Frequency)
