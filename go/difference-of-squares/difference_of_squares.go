@@ -1,26 +1,24 @@
 package diffsquares
 
-import "math"
-
 // SquareOfSum square the sum of the first n natural numbers
 func SquareOfSum(n int) int {
 
-	squareOfSum, naturalNumber := 0.0, 1.0
+	squareOfSum, naturalNumber := 0, 1
 	for i := 0; i < n; i++ {
 		squareOfSum += naturalNumber
-		naturalNumber += 1.0
+		naturalNumber += 1
 	}
 
-	return int(math.Pow(squareOfSum, 2))
+	return squareOfSum * squareOfSum
 }
 
 // SumOfSquares sum the squares of the first n natural numbers
 func SumOfSquares(n int) int {
-	sumOfSquares, naturalNumber := 0, 1.0
+	sumOfSquares, naturalNumber := 0, 1
 
 	for i := 0; i < n; i++ {
-		sumOfSquares += int(math.Pow(naturalNumber, 2))
-		naturalNumber += 1.0
+		sumOfSquares += naturalNumber * naturalNumber
+		naturalNumber += 1
 	}
 
 	return sumOfSquares
