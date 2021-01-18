@@ -3,9 +3,9 @@ package diffsquares
 // SquareOfSum square the sum of the first n natural numbers
 func SquareOfSum(n int) int {
 
-	squareOfSum := (n * (n + 1)) / 2
+	sum := (n * (n + 1)) / 2
 
-	return squareOfSum * squareOfSum
+	return sum * sum
 }
 
 // SumOfSquares sum the squares of the first n natural numbers
