@@ -2,6 +2,7 @@ package luhn
 
 import "strings"
 
+// Valid given a number determine whether or not it is valid per the Luhn formula
 func Valid(s string) bool {
 	runes := []rune(strings.TrimSpace(s))
 	length := len(runes)
