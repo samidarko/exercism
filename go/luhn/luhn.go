@@ -7,7 +7,7 @@ import (
 
 // Valid given a number determine whether or not it is valid per the Luhn formula
 func Valid(s string) bool {
-	runes := []rune(strings.Replace(s, " ", "", -1))
+	runes := []rune(strings.ReplaceAll(s, " ", ""))
 	length := len(runes)
 
 	if length < 2 {
@@ -33,12 +33,10 @@ func Valid(s string) bool {
 			} else {
 				digit = doubledDigit
 			}
-			isSecondDigit = false
-		} else {
-			isSecondDigit = true
 		}
-		digitsSum += digit
 
+		isSecondDigit = !isSecondDigit
+		digitsSum += digit
 	}
 	return digitsSum%10 == 0
 }
