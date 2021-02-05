@@ -1,7 +1,6 @@
 package cryptosquare
 
 import (
-	"fmt"
 	"log"
 	"math"
 	"regexp"
@@ -11,24 +10,20 @@ import (
 func Encode(s string) string {
 	runes := normalize(s)
 	sLen := len(runes)
-	sHalfLen := math.Sqrt(float64(sLen))
+	sqrt := math.Sqrt(float64(sLen))
 
-	r := int(sHalfLen)
-	c := r + 1 // c >= r and c
+	r := int(math.Round(sqrt))
+	c := r
 
 	var output strings.Builder
 
-	if float64(r) == sHalfLen {
-		c = r
-		r -= 1 // c >= r and c
+	if float64(r) < sqrt {
+		c = r + 1
 	}
-
-	fmt.Println("r", r, "c", c)
 
 	for i := 0; i < c; i++ {
 		for j := 0; j < r; j++ {
 			offset := i + j*c
-			fmt.Println("offset", i, j, offset, sLen, offset%c)
 			if offset < sLen {
 				output.WriteRune(runes[offset])
 			} else {
@@ -44,7 +39,7 @@ func Encode(s string) string {
 }
 
 func normalize(s string) []rune {
-	reg, err := regexp.Compile("[^a-z]+")
+	reg, err := regexp.Compile("[^a-z1-9]+")
 	if err != nil {
 		log.Fatal(err)
 	}
