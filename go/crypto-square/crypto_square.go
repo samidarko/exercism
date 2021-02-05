@@ -11,10 +11,8 @@ func Encode(s string) string {
 	runes := normalize(s)
 	sLen := len(runes)
 	sqrt := math.Sqrt(float64(sLen))
-
 	r := int(math.Round(sqrt))
 	c := r
-
 	var output strings.Builder
 
 	if float64(r) < sqrt {
