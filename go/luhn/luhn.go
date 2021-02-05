@@ -27,11 +27,9 @@ func Valid(s string) bool {
 
 		digit := int(r - '0')
 		if isSecondDigit {
-			doubledDigit := digit * 2
-			if doubledDigit > 9 {
-				digit = doubledDigit - 9
-			} else {
-				digit = doubledDigit
+			digit = digit * 2
+			if digit > 9 {
+				digit -= 9
 			}
 		}
 
