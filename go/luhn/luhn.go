@@ -7,27 +7,25 @@ import (
 
 // Valid given a number determine whether or not it is valid per the Luhn formula
 func Valid(s string) bool {
-	runes := []rune(strings.ReplaceAll(s, " ", ""))
-	length := len(runes)
+	s = strings.ReplaceAll(s, " ", "")
+	length := len(s)
 
-	if length < 2 {
+	if length < 2 { // input smaller than 2 cannot be valid
 		return false
 	}
-	isSecondDigit := false
+
+	isSecondDigit := length%2 == 0 // determines if first character is second digit or not
 	digitsSum := 0
 
-	var r rune
+	for _, r := range s {
 
-	for i := length - 1; i >= 0; i-- {
-		r = runes[i]
-
-		if !unicode.IsDigit(r) {
+		if !unicode.IsDigit(r) { // non digit characters makes input invalid
 			return false
 		}
 
-		digit := int(r - '0')
+		digit := int(r - '0') // gives real digit value not rune value
 		if isSecondDigit {
-			digit = digit * 2
+			digit *= 2
 			if digit > 9 {
 				digit -= 9
 			}
