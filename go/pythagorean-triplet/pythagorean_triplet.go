@@ -1,7 +1,9 @@
 package pythagorean
 
+// Triplet type
 type Triplet [3]int
 
+// Range returns a list of all Pythagorean triplets with sides in the
 func Range(min, max int) []Triplet {
 	var triplets []Triplet
 
@@ -18,6 +20,7 @@ func Range(min, max int) []Triplet {
 	return triplets
 }
 
+// Sum returns a list of all Pythagorean triplets where the sum a+b+c
 func Sum(p int) []Triplet {
 	var c int
 	var triplets []Triplet
