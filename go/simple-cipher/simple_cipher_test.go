@@ -1,6 +1,7 @@
 package cipher
 
 import (
+	"fmt"
 	"testing"
 )
 
@@ -121,24 +122,24 @@ var vtests = []struct {
 	}},
 }
 
-//func TestVigenere(t *testing.T) {
-//	for _, test := range vtests {
-//		v := NewVigenere(test.key)
-//		if v == nil {
-//			t.Fatalf("NewVigenere(%q) returned nil, want non-nil Cipher",
-//				test.key)
-//		}
-//		testCipher(fmt.Sprintf("Vigenere(%q)", test.key), v, test.tests, t)
-//	}
-//
-//	// invalid keys
-//	for _, k := range []string{"", "a", "aa", "no way", "CAT", "3", "and,"} {
-//		if NewVigenere(k) != nil {
-//			t.Fatalf("NewVigenere(%q) returned non-nil, "+
-//				"Want nil return for invalid argument.", k)
-//		}
-//	}
-//}
+func TestVigenere(t *testing.T) {
+	for _, test := range vtests {
+		v := NewVigenere(test.key)
+		if v == nil {
+			t.Fatalf("NewVigenere(%q) returned nil, want non-nil Cipher",
+				test.key)
+		}
+		testCipher(fmt.Sprintf("Vigenere(%q)", test.key), v, test.tests, t)
+	}
+
+	// invalid keys
+	for _, k := range []string{"", "a", "aa", "no way", "CAT", "3", "and,"} {
+		if NewVigenere(k) != nil {
+			t.Fatalf("NewVigenere(%q) returned non-nil, "+
+				"Want nil return for invalid argument.", k)
+		}
+	}
+}
 
 // Benchmark combined time to run all tests.
 // Note other ciphers test different data; times cannot be compared.
@@ -192,48 +193,48 @@ func BenchmarkDecodeShift(b *testing.B) {
 	}
 }
 
-//func BenchmarkNewVigenere(b *testing.B) {
-//	for i := 0; i < b.N; i++ {
-//		for _, test := range vtests {
-//			NewVigenere(test.key)
-//		}
-//	}
-//}
+func BenchmarkNewVigenere(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		for _, test := range vtests {
+			NewVigenere(test.key)
+		}
+	}
+}
 
-//func BenchmarkEncVigenere(b *testing.B) {
-//	v := make([]Cipher, len(vtests))
-//	for i, test := range vtests {
-//		v[i] = NewVigenere(test.key)
-//		if v[i] == nil {
-//			b.Skip("Benchmark requires valid Vigenere test cases")
-//		}
-//	}
-//	b.ResetTimer()
-//	for j := 0; j < b.N; j++ {
-//		for i, test := range vtests {
-//			vi := v[i]
-//			for _, test := range test.tests {
-//				vi.Encode(test.source)
-//			}
-//		}
-//	}
-//}
+func BenchmarkEncVigenere(b *testing.B) {
+	v := make([]Cipher, len(vtests))
+	for i, test := range vtests {
+		v[i] = NewVigenere(test.key)
+		if v[i] == nil {
+			b.Skip("Benchmark requires valid Vigenere test cases")
+		}
+	}
+	b.ResetTimer()
+	for j := 0; j < b.N; j++ {
+		for i, test := range vtests {
+			vi := v[i]
+			for _, test := range test.tests {
+				vi.Encode(test.source)
+			}
+		}
+	}
+}
 
-//func BenchmarkDecVigenere(b *testing.B) {
-//	v := make([]Cipher, len(vtests))
-//	for i, test := range vtests {
-//		v[i] = NewVigenere(test.key)
-//		if v[i] == nil {
-//			b.Skip("Benchmark requires valid Vigenere test cases")
-//		}
-//	}
-//	b.ResetTimer()
-//	for j := 0; j < b.N; j++ {
-//		for i, test := range vtests {
-//			vi := v[i]
-//			for _, test := range test.tests {
-//				vi.Decode(test.cipher)
-//			}
-//		}
-//	}
-//}
+func BenchmarkDecVigenere(b *testing.B) {
+	v := make([]Cipher, len(vtests))
+	for i, test := range vtests {
+		v[i] = NewVigenere(test.key)
+		if v[i] == nil {
+			b.Skip("Benchmark requires valid Vigenere test cases")
+		}
+	}
+	b.ResetTimer()
+	for j := 0; j < b.N; j++ {
+		for i, test := range vtests {
+			vi := v[i]
+			for _, test := range test.tests {
+				vi.Decode(test.cipher)
+			}
+		}
+	}
+}
