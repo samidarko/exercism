@@ -18,7 +18,7 @@ func sanitize(s string) string {
 	return reg.ReplaceAllString(strings.ToLower(s), "")
 }
 
-func validateBoundaries(r rune) rune {
+func wrap(r rune) rune {
 	if r > 'z' {
 		// if passed 'z' returns to 'a'
 		r = 'a' + (r - ('z' + 1))
@@ -42,7 +42,7 @@ func (c config) Encode(s string) string {
 		if distanceIndex == distancesLength {
 			distanceIndex = 0
 		}
-		runes[i] = validateBoundaries(r)
+		runes[i] = wrap(r)
 
 	}
 	return string(runes)
@@ -58,7 +58,7 @@ func (c config) Decode(s string) string {
 		if distanceIndex == distancesLength {
 			distanceIndex = 0
 		}
-		runes[i] = validateBoundaries(r)
+		runes[i] = wrap(r)
 	}
 	return string(runes)
 }
