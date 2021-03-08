@@ -20,5 +20,6 @@ func Square(position int) (uint64, error) {
 	if position < 1 || position > 64 {
 		return 0, errors.New("square position should be between 1 and 64")
 	}
+	// Terms  in  the  Doubling  sequence  can  be  computed  by  the  function: d(n) =2^n (for all natural numbers n)
 	return uint64(math.Pow(2.0, float64(position-1))), nil
 }
