@@ -2,35 +2,48 @@ package clock
 
 import (
 	"fmt"
-	"strings"
 )
 
+// Clock stores time in minutes for a day
 type Clock struct {
-	hour   int
-	minute int
+	time int
 }
 
+const totalMinutes = 1440 // total minutes in a day
+
+// New is a Clock constructor
 func New(hour, minute int) Clock {
-	return Clock{hour: hour, minute: minute}
+	time := hour*60 + minute
+	if time < 0 {
+		time = totalMinutes + (time - (time/totalMinutes)*totalMinutes)
+	}
+	if time >= totalMinutes {
+		time = time - (time/totalMinutes)*totalMinutes
+	}
+	return Clock{time}
 }
+
+// String display time as "HH:MM"
 func (c Clock) String() string {
-	var output strings.Builder
-	if c.hour < 10 {
-		output.WriteString("0")
-	}
-	output.WriteString(fmt.Sprintf("%d", c.hour))
-	output.WriteString(":")
-	if c.minute < 10 {
-		output.WriteString("0")
-	}
-	output.WriteString(fmt.Sprintf("%d", c.minute))
-	return output.String()
+	return fmt.Sprintf("%02d:%02d", c.Hour(), c.Minute())
 }
 
-func (c Clock) Add(t int) Clock {
-	return Clock{hour: 0, minute: 0}
+// Add minutes to Clock
+func (c Clock) Add(minutes int) Clock {
+	return New(c.Hour(), c.Minute()+minutes)
 }
 
-func (c Clock) Subtract(t int) Clock {
-	return Clock{hour: 0, minute: 0}
+// Subtract minutes to Clock
+func (c Clock) Subtract(minutes int) Clock {
+	return New(c.Hour(), c.Minute()-minutes)
+}
+
+// Hour returns which hour of the day
+func (c Clock) Hour() int {
+	return c.time / 60
+}
+
+// Minute returns which minute of the day
+func (c Clock) Minute() int {
+	return c.time % 60
 }
