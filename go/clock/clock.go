@@ -9,16 +9,19 @@ type Clock struct {
 	time int
 }
 
-const totalMinutes = 1440 // total minutes in a day
+const (
+	minutesByDay  = 1440 // total minutes in a day
+	minutesByHour = 60   // total minutes in a day
+)
 
 // New is a Clock constructor
 func New(hour, minute int) Clock {
-	time := hour*60 + minute
+	time := hour*minutesByHour + minute
 	if time < 0 {
-		time = totalMinutes + (time - (time/totalMinutes)*totalMinutes)
+		time = minutesByDay + (time - (time/minutesByDay)*minutesByDay)
 	}
-	if time >= totalMinutes {
-		time = time - (time/totalMinutes)*totalMinutes
+	if time >= minutesByDay {
+		time = time - (time/minutesByDay)*minutesByDay
 	}
 	return Clock{time}
 }
@@ -40,10 +43,10 @@ func (c Clock) Subtract(minutes int) Clock {
 
 // Hour returns which hour of the day
 func (c Clock) Hour() int {
-	return c.time / 60
+	return c.time / minutesByHour
 }
 
 // Minute returns which minute of the day
 func (c Clock) Minute() int {
-	return c.time % 60
+	return c.time % minutesByHour
 }
