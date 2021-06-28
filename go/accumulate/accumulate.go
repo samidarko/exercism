@@ -1,4 +1,4 @@
-// accumulate provide accumulation operation
+// Package accumulate accumulate provide accumulation operation
 package accumulate
 
 // Accumulate apply operation to each item of list
