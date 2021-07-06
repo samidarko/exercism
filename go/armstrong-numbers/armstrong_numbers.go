@@ -5,6 +5,7 @@ import (
 	"strconv"
 )
 
+// IsNumber returns true if n is an Armstrong number
 func IsNumber(n int) bool {
 	s := strconv.Itoa(n)
 	power := float64(len(s))
