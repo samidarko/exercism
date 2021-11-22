@@ -8,8 +8,7 @@ import (
 
 func Answer(question string) (int, bool) {
 	question = strings.ReplaceAll(question, "What is ", "")
-	question = strings.ReplaceAll(question, "multiplied by", "multipliedby")
-	question = strings.ReplaceAll(question, "divided by", "dividedby")
+	question = strings.ReplaceAll(question, " by", "")
 	r := regexp.MustCompile("([+-]?\\d+|[a-zA-Z]+)")
 	tokens := r.FindAllString(question, -1)
 
@@ -30,7 +29,7 @@ func Answer(question string) (int, bool) {
 		if i%2 == 0 {
 			// should be an operation
 			switch element {
-			case "plus", "minus", "multipliedby", "dividedby":
+			case "plus", "minus", "multiplied", "divided":
 				operation = element
 			default:
 				return 0, false
@@ -42,7 +41,16 @@ func Answer(question string) (int, bool) {
 				return 0, false
 			}
 
-			result = calculate(result, number, operation)
+			switch operation {
+			case "multiplied":
+				result *= number
+			case "divided":
+				result /= number
+			case "minus":
+				result -= number
+			case "plus":
+				result += number
+			}
 			operation = ""
 		}
 	}
@@ -51,18 +59,4 @@ func Answer(question string) (int, bool) {
 		return 0, false
 	}
 	return result, true
-}
-
-func calculate(a, b int, operation string) int {
-	switch operation {
-	case "multipliedby":
-		return a * b
-	case "dividedby":
-		return a / b
-	case "minus":
-		return a - b
-	default:
-		// plus
-		return a + b
-	}
 }
