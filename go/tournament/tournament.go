@@ -7,8 +7,9 @@ import (
 	"strings"
 )
 
+// Stat type stores team results
 type Stat struct {
-	name string
+	Name string
 	MP   int
 	W    int
 	D    int
@@ -16,61 +17,81 @@ type Stat struct {
 	P    int
 }
 
+// Tally the results of a small football competition
 func Tally(reader io.Reader, writer io.Writer) error {
-	data, err := io.ReadAll(reader)
+	records, err := io.ReadAll(reader)
 	if err != nil {
 		return err
 	}
 
 	statMap := make(map[string]Stat)
 
-	records := strings.Split(strings.Trim(string(data), "\n"), "\n")
-	for _, record := range records {
+	for _, record := range strings.Split(string(records), "\n") {
+
+		// exclude empty lines and comments
+		if record == "" || strings.HasPrefix(record, "#") {
+			continue
+		}
+
+		// Extract teams and match result for record
 		elements := strings.Split(record, ";")
+		if len(elements) != 3 {
+			return fmt.Errorf("bad record: %s", record)
+		}
 		homeTeam, awayTeam, result := elements[0], elements[1], elements[2]
+
+		// Calculate Stat
 		homeStat := statMap[homeTeam]
-		homeStat.name = homeTeam
-		homeStat.MP += 1
+		homeStat.Name = homeTeam
+		homeStat.MP++
 
 		awayStat := statMap[awayTeam]
-		awayStat.name = awayTeam
-		awayStat.MP += 1
+		awayStat.Name = awayTeam
+		awayStat.MP++
 
 		switch result {
 		case "win":
-			homeStat.W += 1
+			homeStat.W++
 			homeStat.P += 3
-			awayStat.L += 1
+			awayStat.L++
 		case "loss":
-			awayStat.W += 1
+			awayStat.W++
 			awayStat.P += 3
-			homeStat.L += 1
+			homeStat.L++
 		case "draw":
-			homeStat.D += 1
-			homeStat.P += 1
-			awayStat.D += 1
-			awayStat.P += 1
+			homeStat.D++
+			homeStat.P++
+			awayStat.D++
+			awayStat.P++
+		default:
+			return fmt.Errorf("unknown match result: %s", result)
 		}
 		statMap[homeTeam] = homeStat
 		statMap[awayTeam] = awayStat
 
 	}
 
+	// create a list of Stat for map of Stat
 	statList := make([]Stat, 0)
-
 	for _, stat := range statMap {
 		statList = append(statList, stat)
 	}
 
+	// sort by Points then by Name
 	sort.Slice(statList, func(i, j int) bool {
+		if statList[i].P == statList[j].P {
+			return statList[i].Name < statList[j].Name
+		}
 		return statList[i].P > statList[j].P
 	})
+
+	// write the Stat list to output
 	_, _ = io.WriteString(writer, "Team                           | MP |  W |  D |  L |  P\n")
 	if err != nil {
 		return err
 	}
 	for _, stat := range statList {
-		_, _ = fmt.Fprintf(writer, "%-31s|%3d |%3d |%3d |%3d |%3d\n", stat.name, stat.MP, stat.W, stat.D, stat.L, stat.P)
+		_, _ = fmt.Fprintf(writer, "%-31s|%3d |%3d |%3d |%3d |%3d\n", stat.Name, stat.MP, stat.W, stat.D, stat.L, stat.P)
 	}
 	return nil
 }
