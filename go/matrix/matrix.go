@@ -40,12 +40,12 @@ func New(s string) (*Matrix, error) {
 // Cols must return the results without affecting the matrix.
 func (m *Matrix) Cols() [][]int {
 	cols := make([][]int, m.cols)
-	for i := 0; i < m.cols; i++ {
+	for c := 0; c < m.cols; c++ {
 		col := make([]int, m.rows)
-		for j := 0; j < m.rows; j++ {
-			col[j] = m.data[i+j*m.cols]
+		for r := 0; r < m.rows; r++ {
+			col[r] = m.data[c+r*m.cols]
 		}
-		cols[i] = col
+		cols[c] = col
 	}
 	return cols
 }
@@ -53,12 +53,12 @@ func (m *Matrix) Cols() [][]int {
 // Rows must return the results without affecting the matrix.
 func (m *Matrix) Rows() [][]int {
 	rows := make([][]int, m.rows)
-	for i := 0; i < m.rows; i++ {
+	for r := 0; r < m.rows; r++ {
 		row := make([]int, m.cols)
-		for j := 0; j < m.cols; j++ {
-			row[j] = m.data[i*m.cols+j]
+		for c := 0; c < m.cols; c++ {
+			row[c] = m.data[r*m.cols+c]
 		}
-		rows[i] = row
+		rows[r] = row
 	}
 	return rows
 }
