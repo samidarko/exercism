@@ -4,24 +4,15 @@ import (
 	"errors"
 )
 
-// Define the Classification type here.
-
+// Classification type
 type Classification int
 
-func GetDivisors(n int) []int {
-	divisors := []int{1}
-	for i := 2; i <= n/2; i++ {
-		if n%i == 0 {
-			divisors = append(divisors, i)
-		}
-	}
-	return divisors
-}
-
-func GetAliquotSum(divisors []int) int64 {
+func GetAliquotSum(n int64) int64 {
 	var aliquotSum int64
-	for _, d := range divisors {
-		aliquotSum += int64(d)
+	for i := int64(1); i <= n/2; i++ {
+		if n%i == 0 {
+			aliquotSum += i
+		}
 	}
 	return aliquotSum
 }
@@ -39,13 +30,13 @@ func Classify(n int64) (Classification, error) {
 		return -1, ErrOnlyPositive
 	}
 
-	divisors := GetDivisors(int(n))
-	aliquotSum := GetAliquotSum(divisors)
-	if aliquotSum > n {
+	aliquotSum := GetAliquotSum(n)
+	switch {
+	case aliquotSum > n:
 		return ClassificationAbundant, nil
-	}
-	if aliquotSum < n || aliquotSum == 1 {
+	case aliquotSum < n || aliquotSum == 1:
 		return ClassificationDeficient, nil
+	default:
+		return ClassificationPerfect, nil
 	}
-	return ClassificationPerfect, nil
 }
