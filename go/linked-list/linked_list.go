@@ -5,9 +5,8 @@ import "fmt"
 var ErrEmptyList = fmt.Errorf("emtpty list")
 
 type Node struct {
-	Val  interface{}
-	next *Node
-	prev *Node
+	Val        interface{}
+	next, prev *Node
 }
 
 func (n *Node) Next() *Node {
@@ -19,25 +18,15 @@ func (n *Node) Prev() *Node {
 }
 
 func NewList(args ...interface{}) *List {
-	list := &List{}
-	if len(args) == 0 {
-		return list
-	}
-	node := &Node{Val: args[0]}
-	list.first = node
-	list.last = node
-	for _, val := range args[1:] {
-		last := list.Last()
-		node = &Node{Val: val, prev: last}
-		last.next = node
-		list.last = node
+	list := new(List)
+	for _, val := range args {
+		list.PushBack(val)
 	}
 	return list
 }
 
 type List struct {
-	first *Node
-	last  *Node
+	first, last *Node
 }
 
 func (l *List) PushFront(v interface{}) {
@@ -45,8 +34,7 @@ func (l *List) PushFront(v interface{}) {
 	node := &Node{Val: v, next: first}
 	if first != nil {
 		first.prev = node
-	}
-	if first == nil {
+	} else {
 		l.last = node
 	}
 	l.first = node
@@ -54,11 +42,10 @@ func (l *List) PushFront(v interface{}) {
 
 func (l *List) PushBack(v interface{}) {
 	last := l.Last()
-	node := &Node{Val: v, prev: l.last}
+	node := &Node{Val: v, prev: last}
 	if last != nil {
 		last.next = node
-	}
-	if last == nil {
+	} else {
 		l.first = node
 	}
 	l.last = node
@@ -72,8 +59,8 @@ func (l *List) PopFront() (interface{}, error) {
 	if first.next != nil {
 		l.first = first.next
 		l.first.prev = nil
-	}
-	if first.next == nil { // first is also last
+	} else {
+		// no more elements in the list
 		l.first = nil
 		l.last = nil
 	}
@@ -88,8 +75,8 @@ func (l *List) PopBack() (interface{}, error) {
 	if last.prev != nil {
 		l.last = last.prev
 		l.last.next = nil
-	}
-	if last.prev == nil { // last is also first
+	} else {
+		// no more elements in the list
 		l.first = nil
 		l.last = nil
 	}
@@ -97,11 +84,8 @@ func (l *List) PopBack() (interface{}, error) {
 }
 
 func (l *List) Reverse() {
-	node := l.First()
-	for node != nil {
-		next := node.Next()
+	for node := l.First(); node != nil; node = node.Prev() {
 		node.prev, node.next = node.next, node.prev
-		node = next
 	}
 	l.first, l.last = l.last, l.first
 }
