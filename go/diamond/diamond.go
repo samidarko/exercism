@@ -7,7 +7,6 @@ import (
 
 // Gen diamond
 func Gen(char byte) (string, error) {
-
 	if char < 'A' || char > 'Z' {
 		return "", fmt.Errorf("char out of range")
 	}
@@ -22,13 +21,12 @@ func Gen(char byte) (string, error) {
 	for position := 0; position < width; position++ {
 		row := []byte(strings.Repeat(" ", width))
 
+		row[left], row[right] = currentChar, currentChar
 		if position < middle {
-			row[left], row[right] = currentChar, currentChar
 			currentChar++
 			left--
 			right++
 		} else {
-			row[left], row[right] = currentChar, currentChar
 			currentChar--
 			left++
 			right--
