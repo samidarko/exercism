@@ -7,6 +7,7 @@ var events = map[uint]string{
 	0x8: "jump",
 }
 
+// Handshake returns the secret handshake
 func Handshake(code uint) []string {
 	result := make([]string, 0)
 	var eventIds []uint
