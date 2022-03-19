@@ -4,8 +4,8 @@ import "errors"
 
 // List type
 type List struct {
-	head   *Element
-	length int
+	head *Element
+	size int
 }
 
 // Element type
@@ -30,12 +30,12 @@ func (l *List) Push(value int) {
 		next:  l.head,
 	}
 	l.head = element
-	l.length++
+	l.size++
 }
 
 // Size returns the List size
 func (l *List) Size() int {
-	return l.length
+	return l.size
 }
 
 // Pop returns the last inserted Element
@@ -45,7 +45,7 @@ func (l *List) Pop() (int, error) {
 	}
 	value := l.head.value
 	l.head = l.head.next
-	l.length--
+	l.size--
 	return value, nil
 }
 
