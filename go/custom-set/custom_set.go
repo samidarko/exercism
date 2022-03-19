@@ -18,10 +18,10 @@ func New() Set {
 }
 
 // NewFromSlice returns a new Set from slice
-func NewFromSlice(elements []string) Set {
+func NewFromSlice(elems []string) Set {
 	set := New()
-	for _, element := range elements {
-		set[element] = true
+	for _, elem := range elems {
+		set.Add(elem)
 	}
 	return set
 }
@@ -52,10 +52,7 @@ func (s Set) IsEmpty() bool {
 
 // Has returns true if element belongs to Set
 func (s Set) Has(elem string) bool {
-	if _, ok := s[elem]; ok {
-		return true
-	}
-	return false
+	return s[elem]
 }
 
 // Add a new element to set
@@ -66,7 +63,7 @@ func (s Set) Add(elem string) {
 // Subset returns true if all elements of s1 are contained in s2
 func Subset(s1, s2 Set) bool {
 	for elem := range s1 {
-		if s2[elem] == false {
+		if s2.Has(elem) == false {
 			return false
 		}
 	}
@@ -75,17 +72,7 @@ func Subset(s1, s2 Set) bool {
 
 // Disjoint returns true if s1 and s2 do not have any elements in common
 func Disjoint(s1, s2 Set) bool {
-	for elem := range s1 {
-		if s2[elem] {
-			return false
-		}
-	}
-	for elem := range s2 {
-		if s1[elem] {
-			return false
-		}
-	}
-	return true
+	return Intersection(s1, s2).IsEmpty()
 }
 
 // Equal returns true if s1 and s2 have the exact same elements
@@ -93,19 +80,17 @@ func Equal(s1, s2 Set) bool {
 	if len(s1) != len(s2) {
 		return false
 	}
-	for elem := range s1 {
-		if s2[elem] == false {
-			return false
-		}
-	}
-	return true
+	return Subset(s1, s2)
 }
 
-// Intersection returns a Set with elements of s1 contained in s2
+// Intersection returns a Set with elements contained in s1 and s2
 func Intersection(s1, s2 Set) Set {
 	set := New()
+	if len(s2) < len(s1) {
+		s1, s2 = s2, s1
+	}
 	for elem := range s1 {
-		if s2[elem] {
+		if s2.Has(elem) {
 			set.Add(elem)
 		}
 	}
@@ -116,7 +101,7 @@ func Intersection(s1, s2 Set) Set {
 func Difference(s1, s2 Set) Set {
 	set := New()
 	for elem := range s1 {
-		if s2[elem] == false {
+		if s2.Has(elem) == false {
 			set.Add(elem)
 		}
 	}
