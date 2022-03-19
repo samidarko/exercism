@@ -4,7 +4,8 @@ import "errors"
 
 // List type
 type List struct {
-	head *Element
+	head   *Element
+	length int
 }
 
 // Element type
@@ -29,15 +30,12 @@ func (l *List) Push(value int) {
 		next:  l.head,
 	}
 	l.head = element
+	l.length++
 }
 
 // Size returns the List size
 func (l *List) Size() int {
-	size := 0
-	for element := l.head; element != nil; element = element.next {
-		size++
-	}
-	return size
+	return l.length
 }
 
 // Pop returns the last inserted Element
@@ -47,6 +45,7 @@ func (l *List) Pop() (int, error) {
 	}
 	value := l.head.value
 	l.head = l.head.next
+	l.length--
 	return value, nil
 }
 
@@ -66,8 +65,7 @@ func (l *List) Reverse() *List {
 	for curr != nil {
 		next = curr.next
 		curr.next = prev
-		prev = curr
-		curr = next
+		prev, curr = curr, next
 	}
 	l.head = prev
 	return l
