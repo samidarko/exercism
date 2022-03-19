@@ -1,9 +1,20 @@
 package allergies
 
+var allergensCode = map[string]uint{
+	"eggs":         1,
+	"peanuts":      2,
+	"shellfish":    4,
+	"strawberries": 8,
+	"tomatoes":     16,
+	"chocolate":    32,
+	"pollen":       64,
+	"cats":         128,
+}
+
+// Allergies returns a list of allergies given an allergy score
 func Allergies(allergies uint) []string {
 	result := make([]string, 0)
-	allergens := []string{"eggs", "peanuts", "shellfish", "strawberries", "tomatoes", "chocolate", "pollen", "cats"}
-	for _, allergen := range allergens {
+	for allergen := range allergensCode {
 		if AllergicTo(allergies, allergen) {
 			result = append(result, allergen)
 		}
@@ -11,25 +22,8 @@ func Allergies(allergies uint) []string {
 	return result
 }
 
+// AllergicTo returns true if patient is allergic to allergen
 func AllergicTo(allergies uint, allergen string) bool {
-	switch allergen {
-	case "eggs":
-		return allergies&1 == 1
-	case "peanuts":
-		return allergies&2 == 2
-	case "shellfish":
-		return allergies&4 == 4
-	case "strawberries":
-		return allergies&8 == 8
-	case "tomatoes":
-		return allergies&16 == 16
-	case "chocolate":
-		return allergies&32 == 32
-	case "pollen":
-		return allergies&64 == 64
-	case "cats":
-		return allergies&128 == 128
-	default:
-		return false
-	}
+	code := allergensCode[allergen]
+	return allergies&code == code
 }
