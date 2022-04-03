@@ -41,13 +41,22 @@ func Solve(sizeBucketOne, sizeBucketTwo, goalAmount int, startBucket string) (st
 		return "", 0, 0, fmt.Errorf(`start bucket can only be "one" or "two" and you gave "%s"`, startBucket)
 	}
 
+	if goalAmount%(gcd(sizeBucketOne, sizeBucketTwo)) != 0 {
+		return "", 0, 0, errors.New("cannot be solved")
+	}
+
 	buckets := map[string]Bucket{
 		"one": NewBucket(sizeBucketOne),
 		"two": NewBucket(sizeBucketTwo),
 	}
 	currentBucketName := startBucket
 	currentBucket := buckets[currentBucketName]
+	currentBucket.Fill()
+
 	otherBucket := buckets[nextBucket(currentBucketName)]
+	if otherBucket.size == goalAmount {
+		otherBucket.Fill()
+	}
 
 	for currentBucket.quantity != goalAmount && otherBucket.quantity != goalAmount {
 		switch {
@@ -73,4 +82,11 @@ func nextBucket(bucketName string) string {
 		return "two"
 	}
 	return "one"
+}
+
+func gcd(a, b int) int {
+	if b == 0 {
+		return a
+	}
+	return gcd(b, a%b)
 }
