@@ -1,3 +1,4 @@
+// Package bowling score a bowling game
 package bowling
 
 import (
@@ -92,6 +93,7 @@ func (g *Game) Roll(pins int) error {
 	return nil
 }
 
+// FrameScore returns the score for a given frame index
 func (g *Game) FrameScore(i int) int {
 	if i < 0 || i > 9 {
 		return 0
@@ -116,6 +118,7 @@ func (g *Game) FrameScore(i int) int {
 	return score
 }
 
+// Score returns the score
 func (g *Game) Score() (int, error) {
 	if ((g.frames[9].tabulation == Strike || g.frames[9].tabulation == Spare) && len(g.frames[9].throws) < 3) || // last frame bonus roll not rolled
 		g.current < 9 {
