@@ -6,8 +6,8 @@ import (
 )
 
 func IsValidLine(text string) bool {
-	matched, _ := regexp.MatchString(`^\[(TRC|DBG|INF|WRN|ERR|FTL)]\s.+`, text)
-	return matched
+	re := regexp.MustCompile(`^\[(TRC|DBG|INF|WRN|ERR|FTL)]\s.+`)
+	return re.MatchString(text)
 }
 
 func SplitLogLine(text string) []string {
