@@ -1,6 +1,8 @@
 package stateoftictactoe
 
-import "fmt"
+import (
+	"errors"
+)
 
 type State string
 
@@ -11,13 +13,55 @@ const (
 )
 
 type Line []rune
+
+func (l Line) getState() (State, error) {
+	if len(l) != 3 {
+		return "", errors.New("line bad length")
+	}
+
+	for i := range l {
+		if l[i] == ' ' {
+			return Ongoing, nil
+		}
+		if l[0] != l[i] {
+			return "", nil
+		}
+	}
+
+	return Win, nil
+}
+
 type Lines []Line
 
 func StateOfTicTacToe(board []string) (State, error) {
-	for _, line := range getDiagonalLines(board) {
-		fmt.Println(string(line))
+	xs, os := totalMoves(board)
+	if !(xs == os+1 || xs == os) {
+		return "", errors.New("incorrect moves")
 	}
-	return Win, nil
+	lines := append(getDiagonalLines(board), append(getHorizontalLines(board), getVerticalLines(board)...)...)
+	isOngoing, hasWon := false, false
+	for _, line := range lines {
+		state, err := line.getState()
+		if err != nil {
+			return "", err
+		}
+		if state == Win {
+			if hasWon {
+				return "", errors.New("players kept playing after a win")
+			}
+			hasWon = true
+		}
+		if state == Ongoing {
+			isOngoing = true
+		}
+	}
+	if hasWon {
+		return Win, nil
+	}
+	if isOngoing {
+		return Ongoing, nil
+	}
+	return Draw, nil
 }
 
 func getHorizontalLines(board []string) (lines Lines) {
@@ -51,4 +95,19 @@ func getDiagonalLines(board []string) Lines {
 	}
 
 	return lines
+}
+
+func totalMoves(board []string) (xs, os int) {
+	for _, line := range board {
+		for _, move := range line {
+			if move == 'X' {
+				xs++
+			}
+			if move == 'O' {
+				os++
+			}
+		}
+	}
+
+	return
 }
