@@ -38,24 +38,27 @@ func StateOfTicTacToe(board []string) (State, error) {
 	if !(xs == os+1 || xs == os) {
 		return "", errors.New("incorrect moves")
 	}
+
 	lines := append(getDiagonalLines(board), append(getHorizontalLines(board), getVerticalLines(board)...)...)
-	isOngoing, hasWon := false, false
+	isOngoing, winner := false, ' '
+
 	for _, line := range lines {
 		state, err := line.getState()
 		if err != nil {
 			return "", err
 		}
 		if state == Win {
-			if hasWon {
+			if winner != ' ' && winner != line[0] {
 				return "", errors.New("players kept playing after a win")
 			}
-			hasWon = true
+			winner = line[0]
 		}
 		if state == Ongoing {
 			isOngoing = true
 		}
 	}
-	if hasWon {
+
+	if winner != ' ' {
 		return Win, nil
 	}
 	if isOngoing {
