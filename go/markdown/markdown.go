@@ -9,18 +9,9 @@ import (
 )
 
 var rules = [][2]string{
-	//header rules
-	//{`#{7}\s?([^\n]+)`, "<h7>$1</h7>"},
-	//{`#{6}\s?([^\n]+)`, "<h6>$1</h6>"},
-	//{`#{5}\s?([^\n]+)`, "<h5>$1</h5>"},
-	//{`#{4}\s?([^\n]+)`, "<h4>$1</h4>"},
-	//{`#{3}\s?([^\n]+)`, "<h3>$1</h3>"},
-	//{`#{2}\s?([^\n]+)`, "<h2>$1</h2>"},
-	//{`#{1}\s?([^\n]+)`, "<h1>$1</h1>"},
 	//bold, italics and paragraph rules
 	{`__([^_]+)__`, "<strong>$1</strong>"},
 	{`_([^_]+)_`, "<em>$1</em>"},
-	//{`([^\n]+\n?)`, "<p>$1</p>"},
 }
 
 func applyRules(line string) string {
@@ -45,16 +36,29 @@ func Render(markdown string) string {
 
 	var html strings.Builder
 	list := make([]string, 0)
-	for _, line := range strings.Split(markdown, "\n") {
-		switch line[0] {
-		case '*':
+	lines := strings.Split(markdown, "\n")
+	for i, line := range lines {
+
+		if line[0] == '*' {
+			// if line is a list item, we append to the list
 			element := line[2:]
 			list = append(list, element)
-		case '#':
-			if len(list) > 0 {
+
+			// if a list item was the last line
+			if i == len(lines)-1 {
 				html.WriteString(createList(list))
-				list = make([]string, 0)
 			}
+			continue
+		}
+
+		if len(list) > 0 {
+			// this line is not a list item	anymore, we can process the list
+			html.WriteString(createList(list))
+			list = make([]string, 0)
+		}
+
+		switch line[0] {
+		case '#':
 			headerSize := len(regexp.MustCompile(`#+`).FindString(line))
 			if headerSize < 7 {
 				html.WriteString(fmt.Sprintf("<h%d>%s</h%d>", headerSize, line[headerSize+1:], headerSize))
@@ -62,17 +66,9 @@ func Render(markdown string) string {
 				html.WriteString(fmt.Sprintf("<p>%s</p>", line))
 			}
 		default:
-			if len(list) > 0 {
-				html.WriteString(createList(list))
-				list = make([]string, 0)
-			}
 			line = applyRules(line)
 			html.WriteString(fmt.Sprintf("<p>%s</p>", line))
 		}
-	}
-
-	if len(list) > 0 {
-		html.WriteString(createList(list))
 	}
 
 	return html.String()
