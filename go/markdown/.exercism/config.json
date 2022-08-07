@@ -1,0 +1,29 @@
+{
+  "blurb": "Refactor a Markdown parser",
+  "authors": [
+    "ilmanzo"
+  ],
+  "contributors": [
+    "bitfield",
+    "ekingery",
+    "ferhatelmas",
+    "hilary",
+    "leenipper",
+    "sebito91",
+    "jasstkn"
+  ],
+  "files": {
+    "solution": [
+      "markdown.go"
+    ],
+    "test": [
+      "markdown_test.go"
+    ],
+    "example": [
+      ".meta/example.go"
+    ],
+    "editor": [
+      "cases_test.go"
+    ]
+  }
+}
