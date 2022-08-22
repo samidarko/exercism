@@ -9,6 +9,10 @@ func Solve(words []string, puzzle []string) (map[string][2][2]int, error) {
 	result := map[string][2][2]int{}
 	index := -1
 
+	//for _, line := range puzzle {
+	//	fmt.Println(line)
+	//}
+
 	// horizontal search
 	for _, word := range words {
 		reversedWord := reverse(word)
@@ -46,16 +50,21 @@ func Solve(words []string, puzzle []string) (map[string][2][2]int, error) {
 	// diagonal search
 	for _, word := range words {
 		reversedWord := reverse(word)
-		for i, diagonal := range getDiagonals(puzzle) {
-			// top to bottom
+		rowIndex := len(puzzle) - 1
+		//colIndex := 0
+		for _, diagonal := range getDiagonals(puzzle) {
+			// top left to bottom right
 			index = strings.Index(diagonal, word)
 			if index > -1 {
-				result[word] = [2][2]int{{i, index}, {i, index + len(word) - 1}}
+				result[word] = [2][2]int{{rowIndex, rowIndex + index}, {rowIndex + len(word) - 1, rowIndex + index + len(word) - 1}}
 			}
-			// bottom to top
+			// bottom right to top left
 			index = strings.Index(diagonal, reversedWord)
 			if index > -1 {
-				result[word] = [2][2]int{{i, index + len(word) - 1}, {i, index}}
+				result[word] = [2][2]int{{index + len(word) - 1, rowIndex + index + len(word) - 1}, {index, rowIndex + index}}
+			}
+			if rowIndex > 0 {
+				rowIndex--
 			}
 		}
 	}
