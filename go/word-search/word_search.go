@@ -9,10 +9,6 @@ func Solve(words []string, puzzle []string) (map[string][2][2]int, error) {
 	result := map[string][2][2]int{}
 	index := -1
 
-	//for _, line := range puzzle {
-	//	fmt.Println(line)
-	//}
-
 	// horizontal search
 	for _, word := range words {
 		reversedWord := reverse(word)
@@ -52,7 +48,7 @@ func Solve(words []string, puzzle []string) (map[string][2][2]int, error) {
 		reversedWord := reverse(word)
 		rowIndex := len(puzzle) - 1
 		//colIndex := 0
-		for _, diagonal := range getDiagonals(puzzle) {
+		for _, diagonal := range getDiagonalsTopLeftBottomRight(puzzle) {
 			// top left to bottom right
 			index = strings.Index(diagonal, word)
 			if index > -1 {
@@ -69,7 +65,7 @@ func Solve(words []string, puzzle []string) (map[string][2][2]int, error) {
 		}
 	}
 
-	if len(result) == 0 {
+	if len(result) != len(words) {
 		return result, errors.New("no result found")
 	}
 	return result, nil
@@ -84,8 +80,8 @@ func reverse(s string) string {
 }
 
 func getColumns(puzzle []string) []string {
-	columns := make([]string, len(puzzle))
-	for i := range puzzle {
+	columns := make([]string, len(puzzle[0]))
+	for i := range columns {
 		column := make([]uint8, len(puzzle))
 		for j := range puzzle {
 			column[j] = puzzle[j][i]
@@ -95,12 +91,12 @@ func getColumns(puzzle []string) []string {
 	return columns
 }
 
-func getDiagonals(puzzle []string) []string {
+func getDiagonalsTopLeftBottomRight(puzzle []string) []string {
 	diagonals := make([]string, 0)
 
 	for i, j := len(puzzle)-1, 0; j < len(puzzle); {
 		diagonal := make([]uint8, 0)
-		for x, y := i, j; x >= 0 && x < len(puzzle) && y >= 0 && y < len(puzzle); x, y = x+1, y+1 {
+		for x, y := i, j; x >= 0 && x < len(puzzle) && y >= 0 && y < len(puzzle[0]); x, y = x+1, y+1 {
 			diagonal = append(diagonal, puzzle[x][y])
 		}
 		diagonals = append(diagonals, string(diagonal))
