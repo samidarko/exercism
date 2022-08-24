@@ -109,3 +109,22 @@ func getDiagonalsTopLeftBottomRight(puzzle []string) []string {
 
 	return diagonals
 }
+
+//func getDiagonalsTopRightBottomLeft(puzzle []string) []string {
+//	diagonals := make([]string, 0)
+//
+//	for i, j := len(puzzle)-1, 0; j < len(puzzle); {
+//		diagonal := make([]uint8, 0)
+//		for x, y := i, j; x >= 0 && x < len(puzzle) && y >= 0 && y < len(puzzle); x, y = x+1, y+1 {
+//			diagonal = append(diagonal, puzzle[x][y])
+//		}
+//		diagonals = append(diagonals, string(diagonal))
+//		if i > 0 {
+//			i--
+//		} else {
+//			j++
+//		}
+//	}
+//
+//	return diagonals
+//}
