@@ -47,8 +47,28 @@ func Solve(words []string, puzzle []string) (map[string][2][2]int, error) {
 	for _, word := range words {
 		reversedWord := reverse(word)
 		rowIndex := len(puzzle) - 1
-		//colIndex := 0
 		for _, diagonal := range getDiagonalsTopLeftBottomRight(puzzle) {
+			// top left to bottom right
+			index = strings.Index(diagonal, word)
+			if index > -1 {
+				result[word] = [2][2]int{{rowIndex, rowIndex + index}, {rowIndex + len(word) - 1, rowIndex + index + len(word) - 1}}
+			}
+			// bottom right to top left
+			index = strings.Index(diagonal, reversedWord)
+			if index > -1 {
+				result[word] = [2][2]int{{index + len(word) - 1, rowIndex + index + len(word) - 1}, {index, rowIndex + index}}
+			}
+			if rowIndex > 0 {
+				rowIndex--
+			}
+		}
+	}
+
+	// other diagonal search
+	for _, word := range words {
+		reversedWord := reverse(word)
+		rowIndex := len(puzzle) - 1
+		for _, diagonal := range getDiagonalsTopRightBottomLeft(puzzle) {
 			// top left to bottom right
 			index = strings.Index(diagonal, word)
 			if index > -1 {
@@ -113,13 +133,13 @@ func getDiagonalsTopLeftBottomRight(puzzle []string) []string {
 func getDiagonalsTopRightBottomLeft(puzzle []string) []string {
 	diagonals := make([]string, 0)
 
-	for i, j := 0, 0; j < len(puzzle); {
+	for i, j := 0, 0; i < len(puzzle); {
 		diagonal := make([]uint8, 0)
-		for x, y := i, j; x >= 0 && x < len(puzzle) && y >= 0 && y < len(puzzle); x, y = x+1, y+1 {
+		for x, y := i, j; x >= 0 && x < len(puzzle) && y >= 0 && y < len(puzzle[0]); x, y = x+1, y-1 {
 			diagonal = append(diagonal, puzzle[x][y])
 		}
 		diagonals = append(diagonals, string(diagonal))
-		if j < len(puzzle) {
+		if j < len(puzzle)-1 {
 			j++
 		} else {
 			i++

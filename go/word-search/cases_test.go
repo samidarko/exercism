@@ -173,11 +173,11 @@ var testCases = []struct {
 		expectError: true,
 		expected:    map[string][2][2]int{"lisp": {{-1, -1}, {-1, -1}}},
 	},
-	//{
-	//	description: "Should not wrap around vertically to find a word",
-	//	puzzle:      []string{"s", "u", "r", "a", "b", "c", "t"},
-	//	words:       []string{"rust"},
-	//	expectError: true,
-	//	expected:    map[string][2][2]int{"rust": {{-1, -1}, {-1, -1}}},
-	//},
+	{
+		description: "Should not wrap around vertically to find a word",
+		puzzle:      []string{"s", "u", "r", "a", "b", "c", "t"},
+		words:       []string{"rust"},
+		expectError: true,
+		expected:    map[string][2][2]int{"rust": {{-1, -1}, {-1, -1}}},
+	},
 }

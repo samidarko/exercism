@@ -53,15 +53,15 @@ func TestGetDiagonalsTopLeftBottomRight(t *testing.T) {
 func TestGetDiagonalsTopRightBottomLeft(t *testing.T) {
 	puzzle := []string{"jefblpepre", "camdcimgtc", "oivokprjsm", "pbwasqroua", "rixilelhrs", "wolcqlirpc", "screeaumgr", "alxhpburyi", "jalaycalmp", "clojurermt"}
 	actual := getDiagonalsTopRightBottomLeft(puzzle)
-	expected := []string{"j", "ec", "oaf", "sllj", "wcxau", "rorhyr", "pilepce", "obxcebar", "ciwiqaulm", "javallurmt", "emoseimyp", "fdkqlrgi", "bcprhpr", "lirorc", "pmjus", "egsa", "ptm", "rc", "e"}
+	expected := []string{"j", "ec", "fao", "bmip", "ldvbr", "pcowiw", "eikaxos", "pmpsilca", "rgrqlcrlj", "etjreqexac", "csollehll", "muhiapao", "arrubyj", "spmucu", "cgrar", "ryle", "imr", "pm", "t"}
 	if !reflect.DeepEqual(actual, expected) {
 		t.Fatalf("Expected: %v\n\tGot: %v", expected, actual)
 	}
-	//
-	//actual = getDiagonalsTopRightBottomLeft([]string{"s", "u", "r", "a", "b", "c", "t"})
-	//expected = []string{"t", "c", "b", "a", "r", "u", "s", "", "", "", "", "", ""}
-	//if !reflect.DeepEqual(actual, expected) {
-	//	t.Fatalf("Expected: %v\n\tGot: %v", expected, actual)
-	//}
+
+	actual = getDiagonalsTopRightBottomLeft([]string{"s", "u", "r", "a", "b", "c", "t"})
+	expected = []string{"s", "", "", "", "", "", "", "", "", "", "", "", ""}
+	if !reflect.DeepEqual(actual, expected) {
+		t.Fatalf("Expected: %v\n\tGot: %v", expected, actual)
+	}
 
 }
