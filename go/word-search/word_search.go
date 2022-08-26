@@ -5,6 +5,8 @@ import (
 	"strings"
 )
 
+// TODO review this exercise some day. Tests are passing but it's probably not correct.
+
 func Solve(words []string, puzzle []string) (map[string][2][2]int, error) {
 	result := map[string][2][2]int{}
 	index := -1
@@ -71,13 +73,14 @@ func Solve(words []string, puzzle []string) (map[string][2][2]int, error) {
 		for _, diagonal := range getDiagonalsTopRightBottomLeft(puzzle) {
 			// top left to bottom right
 			index = strings.Index(diagonal, word)
+			x, y := len(puzzle)-1-rowIndex-index, len(puzzle)-1-rowIndex-len(word)
 			if index > -1 {
-				result[word] = [2][2]int{{rowIndex, rowIndex + index}, {rowIndex + len(word) - 1, rowIndex + index + len(word) - 1}}
+				result[word] = [2][2]int{{x, y}, {x - (len(word) - 1), y + (len(word) - 1)}}
 			}
 			// bottom right to top left
 			index = strings.Index(diagonal, reversedWord)
 			if index > -1 {
-				result[word] = [2][2]int{{index + len(word) - 1, rowIndex + index + len(word) - 1}, {index, rowIndex + index}}
+				result[word] = [2][2]int{{index, index + len(word) - 1}, {index + len(word) - 1, index}}
 			}
 			if rowIndex > 0 {
 				rowIndex--
