@@ -5,8 +5,6 @@ import (
 	"strings"
 )
 
-// TODO review this exercise some day. Tests are passing but it's probably not correct.
-
 func Solve(words []string, puzzle []string) (map[string][2][2]int, error) {
 	result := map[string][2][2]int{}
 	index := -1
@@ -18,12 +16,14 @@ func Solve(words []string, puzzle []string) (map[string][2][2]int, error) {
 			// left to right
 			index = strings.Index(row, word)
 			if index > -1 {
-				result[word] = [2][2]int{{index, i}, {index + len(word) - 1, i}}
+				x, y := index, i
+				result[word] = [2][2]int{{x, y}, {x + len(word) - 1, y}}
 			}
 			// right to left
 			index = strings.Index(row, reversedWord)
 			if index > -1 {
-				result[word] = [2][2]int{{index + len(word) - 1, i}, {index, i}}
+				x, y := index, i
+				result[word] = [2][2]int{{x + len(word) - 1, y}, {x, y}}
 			}
 		}
 	}
@@ -35,12 +35,14 @@ func Solve(words []string, puzzle []string) (map[string][2][2]int, error) {
 			// top to bottom
 			index = strings.Index(column, word)
 			if index > -1 {
-				result[word] = [2][2]int{{i, index}, {i, index + len(word) - 1}}
+				x, y := i, index
+				result[word] = [2][2]int{{x, y}, {x, y + len(word) - 1}}
 			}
 			// bottom to top
 			index = strings.Index(column, reversedWord)
 			if index > -1 {
-				result[word] = [2][2]int{{i, index + len(word) - 1}, {i, index}}
+				x, y := i, index
+				result[word] = [2][2]int{{x, y + len(word) - 1}, {x, y}}
 			}
 		}
 	}
@@ -53,12 +55,14 @@ func Solve(words []string, puzzle []string) (map[string][2][2]int, error) {
 			// top left to bottom right
 			index = strings.Index(diagonal, word)
 			if index > -1 {
-				result[word] = [2][2]int{{rowIndex, rowIndex + index}, {rowIndex + len(word) - 1, rowIndex + index + len(word) - 1}}
+				x, y := rowIndex, rowIndex+index
+				result[word] = [2][2]int{{x, y}, {x + len(word) - 1, y + len(word) - 1}}
 			}
 			// bottom right to top left
 			index = strings.Index(diagonal, reversedWord)
 			if index > -1 {
-				result[word] = [2][2]int{{index + len(word) - 1, rowIndex + index + len(word) - 1}, {index, rowIndex + index}}
+				x, y := index, rowIndex+index
+				result[word] = [2][2]int{{x + len(word) - 1, y + len(word) - 1}, {x, y}}
 			}
 			if rowIndex > 0 {
 				rowIndex--
@@ -73,8 +77,8 @@ func Solve(words []string, puzzle []string) (map[string][2][2]int, error) {
 		for _, diagonal := range getDiagonalsTopRightBottomLeft(puzzle) {
 			// top left to bottom right
 			index = strings.Index(diagonal, word)
-			x, y := len(puzzle)-1-rowIndex-index, len(puzzle)-1-rowIndex-len(word)
 			if index > -1 {
+				x, y := (len(puzzle)-1)-(rowIndex+index), len(puzzle)-1-(rowIndex+len(word))
 				result[word] = [2][2]int{{x, y}, {x - (len(word) - 1), y + (len(word) - 1)}}
 			}
 			// bottom right to top left
