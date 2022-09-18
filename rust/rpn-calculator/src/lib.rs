@@ -53,8 +53,8 @@ pub fn evaluate(inputs: &[CalculatorInput]) -> Option<i32> {
     }
 
     if stack.len() > 1 {
-       None
-    } else {
-        stack.pop()
+       return None
     }
+
+    stack.pop()
 }
