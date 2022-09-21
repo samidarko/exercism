@@ -1,15 +1,12 @@
 use std::collections::HashSet;
 
-// let anagrams = possible_anagrams.iter().filter(|x| are_anagrams(word, x)).collect::<&[&str]>();
-// HashSet::from(anagrams)
 pub fn anagrams_for<'a>(word: &str, possible_anagrams: &[&'a str]) -> HashSet<&'a str> {
-    let mut anagrams: HashSet<&'a str> = HashSet::new();
-    for possible_anagram in possible_anagrams {
-        if are_anagrams(word, possible_anagram) {
-            anagrams.insert(possible_anagram);
-        }
-    }
-    anagrams
+    let result: Vec<&str> = possible_anagrams.iter()
+        .filter(|a| are_anagrams(word, **a))
+        .map(|x| *x)
+        .collect();
+
+    HashSet::from_iter(result)
 }
 
 fn are_anagrams(left: &str, right: &str) -> bool {
