@@ -16,6 +16,8 @@ pub fn sublist<T: PartialEq>(first_list: &[T], second_list: &[T]) -> Comparison 
 }
 
 fn is_sublist<T: PartialEq>(first_list: &[T], second_list: &[T]) -> bool {
-    (0..=second_list.len() - first_list.len())
-        .any(|i| second_list[i..i + first_list.len()] == *first_list)
+    first_list.is_empty()
+        || second_list
+            .windows(first_list.len())
+            .any(|s| s == first_list)
 }
