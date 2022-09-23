@@ -16,9 +16,7 @@ pub fn is_valid(code: &str) -> bool {
         |(is_second_digit, digit_sum), c| {
             let digit = c.to_digit(10).unwrap();
             match digit * 2 {
-                doubled_digit if is_second_digit && doubled_digit > 9 => {
-                    (!is_second_digit, digit_sum + doubled_digit - 9)
-                }
+                doubled_digit if is_second_digit && doubled_digit > 9 => (!is_second_digit, digit_sum + doubled_digit - 9),
                 doubled_digit if is_second_digit => (!is_second_digit, digit_sum + doubled_digit),
                 _ => (!is_second_digit, digit_sum + digit),
             }
