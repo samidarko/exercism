@@ -6,25 +6,26 @@ pub fn is_valid(code: &str) -> bool {
         return false;
     }
 
-    let mut digits_sum = 0;
-    let mut is_second_digit = code.len() % 2 == 0;
-
-    for c in code.chars() {
-        if !c.is_digit(10) {
-            return false;
-        }
-        let mut digit = c.to_digit(10).unwrap();
-        if is_second_digit {
-            println!("{}", digit);
-            digit *= 2;
-            if digit > 9 {
-                digit -= 9;
-            }
-        }
-
-        is_second_digit = !is_second_digit;
-        digits_sum += digit;
+    // if a char is not a digit then stop here
+    if code.chars().any(|c| !c.is_digit(10)) {
+        return false;
     }
+
+    let is_second_digit = code.len() % 2 == 0;
+
+    let (_, digits_sum) = code.chars().fold(
+        (is_second_digit, 0),
+        |(is_second_digit, digit_sum), c| {
+            let digit = c.to_digit(10).unwrap();
+            match digit * 2 {
+                doubled_digit if is_second_digit && doubled_digit > 9 => {
+                    (!is_second_digit, digit_sum + doubled_digit - 9)
+                }
+                doubled_digit if is_second_digit => (!is_second_digit, digit_sum + doubled_digit),
+                _ => (!is_second_digit, digit_sum + digit),
+            }
+        },
+    );
 
     digits_sum % 10 == 0
 }
