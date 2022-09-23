@@ -11,10 +11,8 @@ pub fn is_valid(code: &str) -> bool {
         return false;
     }
 
-    let is_second_digit = code.len() % 2 == 0;
-
     let (_, digits_sum) = code.chars().fold(
-        (is_second_digit, 0),
+        (code.len() % 2 == 0, 0),
         |(is_second_digit, digit_sum), c| {
             let digit = c.to_digit(10).unwrap();
             match digit * 2 {
