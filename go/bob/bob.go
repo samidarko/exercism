@@ -15,20 +15,18 @@ var isAlpha = regexp.MustCompile(`[A-Za-z]+`).MatchString
 // Hey should reply as Bob would
 func Hey(remark string) string {
 	remark = strings.TrimSpace(remark)
-	var response string
 
 	switch {
 	case isAlpha(remark) && remark == strings.ToUpper(remark) && strings.Contains(remark, "?"):
-		response = "Calm down, I know what I'm doing!"
+		return "Calm down, I know what I'm doing!"
 	case isAlpha(remark) && remark == strings.ToUpper(remark):
-		response = "Whoa, chill out!"
+		return "Whoa, chill out!"
 	case remark != "" && remark[len(remark)-1] == '?':
-		response = "Sure."
+		return "Sure."
 	case remark == "":
-		response = "Fine. Be that way!"
+		return "Fine. Be that way!"
 	default:
-		response = "Whatever."
+		return "Whatever."
 	}
 
-	return response
 }
