@@ -13,23 +13,16 @@ impl<'a> HighScores<'a> {
     }
 
     pub fn latest(&self) -> Option<u32> {
-        match self.scores.last() {
-            Some(score) => Some(*score),
-            None => None,
-        }
+        self.scores.last().copied()
     }
 
     pub fn personal_best(&self) -> Option<u32> {
-        match self.scores.iter().max() {
-            Some(score) => Some(*score),
-            None => None,
-        }
+        self.scores.iter().max().copied()
     }
 
     pub fn personal_top_three(&self) -> Vec<u32> {
         let mut scores: Vec<u32> = self.scores.to_vec();
-        scores.sort_unstable();
-        scores.reverse();
-        scores.iter().take(3).map(|x| *x).collect::<Vec<u32>>()
+        scores.sort_unstable_by(|a, b| b.cmp(a));
+        scores.iter().take(3).copied().collect::<Vec<u32>>()
     }
 }
