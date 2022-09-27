@@ -1,5 +1,7 @@
 use regex::{Captures, Regex};
 
+// TODO even if this solution is working, it's too complex. Let's think about it again someday.
+
 pub fn abbreviate(phrase: &str) -> String {
     phrase
         .replace("_", "")
