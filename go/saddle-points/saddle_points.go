@@ -9,9 +9,7 @@ import (
 type Pair [2]int
 
 // Matrix type
-type Matrix struct {
-	data [][]int
-}
+type Matrix [][]int
 
 // New returns a matrix from string
 func New(s string) (*Matrix, error) {
@@ -30,7 +28,7 @@ func New(s string) (*Matrix, error) {
 			data = append(data, value)
 		}
 
-		matrix.data = append(matrix.data, data)
+		*matrix = append(*matrix, data)
 	}
 	return matrix, nil
 }
@@ -38,7 +36,7 @@ func New(s string) (*Matrix, error) {
 // Pairs returns all the matrix's pairs
 func (m *Matrix) Pairs() (pairs []Pair) {
 	// row / colum
-	for rowNumber, row := range m.data {
+	for rowNumber, row := range *m {
 		for colNumber := range row {
 			pairs = append(pairs, [2]int{rowNumber + 1, colNumber + 1})
 		}
@@ -54,9 +52,9 @@ func (m *Matrix) IsSaddle(pair Pair) bool {
 // IsGreaterInRow returns true if pair is greater or equal in its row
 func (m *Matrix) IsGreaterInRow(pair Pair) bool {
 	row, colum := pair[0], pair[1]
-	pairValue := m.data[row-1][colum-1]
+	pairValue := (*m)[row-1][colum-1]
 
-	for _, cellValue := range m.data[row-1] {
+	for _, cellValue := range (*m)[row-1] {
 		if cellValue > pairValue {
 			return false
 		}
@@ -68,10 +66,10 @@ func (m *Matrix) IsGreaterInRow(pair Pair) bool {
 // IsSmallerInCol returns true if pair is smallest or equal in its col
 func (m *Matrix) IsSmallerInCol(pair Pair) bool {
 	_, colum := pair[0], pair[1]
-	pairValue := m.data[pair[0]-1][colum-1]
+	pairValue := (*m)[pair[0]-1][colum-1]
 
-	for row := range m.data {
-		cellValue := m.data[row][colum-1]
+	for row := range *m {
+		cellValue := (*m)[row][colum-1]
 		if cellValue < pairValue {
 			return false
 		}
