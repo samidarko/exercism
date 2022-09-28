@@ -2,11 +2,11 @@ package series
 
 // All returns a list of all substrings of s with length n
 func All(n int, s string) (substrings []string) {
-	sLen := len(s)
+
 	offset := 0
 	for {
 		limit := offset + n
-		if limit > sLen {
+		if limit > len(s) {
 			break
 		}
 		substring := s[offset:limit]
