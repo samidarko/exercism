@@ -12,10 +12,6 @@ func CollatzConjecture(n int) (int, error) {
 
 	steps := 0
 
-	if n == 1 {
-		return steps, nil
-	}
-
 	for n != 1 {
 
 		if n%2 == 0 {
