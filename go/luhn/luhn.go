@@ -8,13 +8,12 @@ import (
 // Valid given a number determine whether or not it is valid per the Luhn formula
 func Valid(s string) bool {
 	s = strings.ReplaceAll(s, " ", "")
-	length := len(s)
 
-	if length < 2 { // input smaller than 2 cannot be valid
+	if len(s) < 2 { // input smaller than 2 cannot be valid
 		return false
 	}
 
-	isSecondDigit := length%2 == 0 // determines if first character is second digit or not
+	isSecondDigit := len(s)%2 == 0 // determines if first character is second digit or not
 	digitsSum := 0
 
 	for _, r := range s {
