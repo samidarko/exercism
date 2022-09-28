@@ -20,7 +20,7 @@ func Convert(i int) string {
 	}
 
 	if result == "" {
-		return strconv.Itoa(i)
+		result = strconv.Itoa(i)
 	}
 	return result
 }
