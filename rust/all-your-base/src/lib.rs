@@ -58,13 +58,11 @@ pub fn convert(numbers: &[u32], from_base: u32, to_base: u32) -> Result<Vec<u32>
 
     // convert to base 10
     let mut ten_base: u32 = 0;
-    let mut power: u32 = (numbers.len() - 1) as u32;
+    let mut power: u32 = numbers.len() as u32;
 
     for number in numbers {
+        power -= 1;
         ten_base += number * from_base.pow(power);
-        if power > 0 {
-            power -= 1;
-        }
     }
 
     let mut result: Vec<u32> = vec![];
@@ -75,5 +73,6 @@ pub fn convert(numbers: &[u32], from_base: u32, to_base: u32) -> Result<Vec<u32>
         result.push(remainder);
     }
 
-    Ok(result.iter().rev().map(u32::clone).collect::<Vec<u32>>())
+    result.reverse();
+    Ok(result)
 }
