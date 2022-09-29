@@ -26,8 +26,10 @@ func ConvertToBase(inputBase int, inputDigits []int, outputBase int) ([]int, err
 
 	// convert to base 10
 	tenBase := 0
-	for i, power := 0, len(inputDigits)-1; power >= 0; i, power = i+1, power-1 {
-		tenBase += inputDigits[i] * pow(inputBase, power)
+	power := len(inputDigits) - 1
+	for _, d := range inputDigits {
+		tenBase += d * pow(inputBase, power)
+		power--
 	}
 
 	// convert to output base
