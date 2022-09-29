@@ -9,7 +9,7 @@ pub fn is_valid_isbn(isbn: &str) -> bool {
     let mut factor = 10;
     let mut sum = 0;
 
-    for (i, c) in isbn.chars().enumerate() {
+    for (i, c) in isbn.char_indices() {
         if let Some(n) = c.to_digit(10) {
             sum += n * factor;
             factor -= 1;
