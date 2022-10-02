@@ -11,18 +11,3 @@ where
     }
     v
 }
-
-// pub fn map<F, T>(input: Vec<T>, function: F) -> Vec<T>
-//     where
-//         F: Fn(T) -> T,
-//         T: Clone + Copy
-// {
-//     match input.first() {
-//         Some(value) => vec![function(*value)]
-//             .iter()
-//             .copied()
-//             .chain(map(input[1..].to_vec(), function))
-//             .collect(),
-//         None => vec![],
-//     }
-// }
