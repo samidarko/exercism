@@ -33,7 +33,6 @@ fn closure_floats() {
 }
 
 #[test]
-#[ignore]
 fn strings() {
     let input = vec!["1".to_string(), "2".into(), "3".into()];
     let expected = vec!["11".to_string(), "22".into(), "33".into()];
@@ -47,19 +46,18 @@ fn change_in_type() {
     assert_eq!(map(input, |s| s.to_string()), expected);
 }
 
-// #[test]
-// #[ignore]
-// fn mutating_closure() {
-//     let mut counter = 0;
-//     let input = vec![-2, 3, 4, -5];
-//     let expected = vec![2, 3, 4, 5];
-//     let result = map(input, |x: i64| {
-//         counter += 1;
-//         x.abs()
-//     });
-//     assert_eq!(result, expected);
-//     assert_eq!(counter, 4);
-// }
+#[test]
+fn mutating_closure() {
+    let mut counter = 0;
+    let input = vec![-2, 3, 4, -5];
+    let expected = vec![2, 3, 4, 5];
+    let result = map(input, |x: i64| {
+        counter += 1;
+        x.abs()
+    });
+    assert_eq!(result, expected);
+    assert_eq!(counter, 4);
+}
 
 #[test]
 fn minimal_bounds_on_input_and_output() {
