@@ -1,16 +1,28 @@
 use std::ops::Fn;
 
 /// What should the type of _function be?
-pub fn map<F>(input: Vec<i32>, function: F) -> Vec<i32>
+pub fn map<F, T, U>(input: Vec<T>, function: F) -> Vec<U>
 where
-    F: Fn(i32) -> i32,
+    F: Fn(T) -> U,
 {
-    match input.first() {
-        Some(value) => vec![function(*value)]
-            .iter()
-            .copied()
-            .chain(map(input[1..].to_vec(), function))
-            .collect(),
-        None => vec![],
+    let mut v: Vec<U> = vec![];
+    for i in input {
+        v.push(function(i));
     }
+    v
 }
+
+// pub fn map<F, T>(input: Vec<T>, function: F) -> Vec<T>
+//     where
+//         F: Fn(T) -> T,
+//         T: Clone + Copy
+// {
+//     match input.first() {
+//         Some(value) => vec![function(*value)]
+//             .iter()
+//             .copied()
+//             .chain(map(input[1..].to_vec(), function))
+//             .collect(),
+//         None => vec![],
+//     }
+// }
