@@ -1,10 +1,10 @@
-use enum_iterator::{all, Sequence};
+use self::Allergen::*;
 
 pub struct Allergies {
     score: u32,
 }
 
-#[derive(Debug, PartialEq, Eq, Copy, Clone, Sequence)]
+#[derive(Debug, PartialEq, Eq, Copy, Clone)]
 pub enum Allergen {
     Eggs,
     Peanuts,
@@ -15,6 +15,17 @@ pub enum Allergen {
     Pollen,
     Cats,
 }
+
+const ALLERGENS: [Allergen; 8] = [
+    Eggs,
+    Peanuts,
+    Shellfish,
+    Strawberries,
+    Tomatoes,
+    Chocolate,
+    Pollen,
+    Cats,
+];
 
 fn get_allergen_code(allergen: &Allergen) -> u32 {
     use Allergen::*;
@@ -41,11 +52,10 @@ impl Allergies {
     }
 
     pub fn allergies(&self) -> Vec<Allergen> {
-        all::<Allergen>()
-            .collect::<Vec<_>>()
+        ALLERGENS
             .iter()
-            .filter(|a| self.is_allergic_to(*a))
             .copied()
+            .filter(|a| self.is_allergic_to(a))
             .collect()
     }
 }
