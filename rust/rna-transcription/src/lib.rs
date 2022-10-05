@@ -1,5 +1,7 @@
 extern crate core;
 
+use std::intrinsics::unreachable;
+
 #[derive(Debug, PartialEq, Eq)]
 pub struct Dna(String);
 
@@ -23,7 +25,7 @@ impl Dna {
                 'C' => 'G',
                 'G' => 'C',
                 'T' => 'A',
-                _ => panic!("wrong char {}", c),
+                _ => unreachable!(),
             })
             .collect::<String>();
         Rna(rna.to_string())
