@@ -11,12 +11,7 @@ const DNA_NUCLEOTIDES: [char; 4] = ['A', 'C', 'G', 'T'];
 
 impl Dna {
     pub fn new(dna: &str) -> Result<Dna, usize> {
-        for (i, c) in dna.chars().enumerate() {
-            if !DNA_NUCLEOTIDES.contains(&c) {
-                return Err(i);
-            }
-        }
-        Ok(Dna(dna.to_string()))
+        validate(dna, &DNA_NUCLEOTIDES).map(|s| Dna(s))
     }
 
     pub fn into_rna(self) -> Rna {
@@ -37,11 +32,15 @@ impl Dna {
 
 impl Rna {
     pub fn new(rna: &str) -> Result<Rna, usize> {
-        for (i, c) in rna.chars().enumerate() {
-            if !RNA_NUCLEOTIDES.contains(&c) {
-                return Err(i);
-            }
-        }
-        Ok(Rna(rna.to_string()))
+        validate(rna, &RNA_NUCLEOTIDES).map(|s| Rna(s))
     }
+}
+
+fn validate(input: &str, nucleotides: &[char; 4]) -> Result<String, usize> {
+    for (i, c) in input.chars().enumerate() {
+        if !nucleotides.contains(&c) {
+            return Err(i);
+        }
+    }
+    Ok(input.to_string())
 }
