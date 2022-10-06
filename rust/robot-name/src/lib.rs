@@ -1,62 +1,82 @@
+use rand::{Rng, SeedableRng};
+use std::time::SystemTime;
+// use rand_core;
+
+// fn all_names<'a>() -> Vec<String> {
+//     let mut names: Vec<String> = vec![];
+//     for c in 'A'..='Z' {
+//         for d in 'A'..='Z' {
+//             for n in 0..1_000 {
+//                 names.push(format!("{}{}{:03}", c, d, n));
+//             }
+//         }
+//     }
+//     names
+// }
+
+const ALPHABET: [char; 26] = [
+    'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S',
+    'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
+];
+
 pub struct Robot {
-    name: String
+    name: String,
 }
 
 impl Robot {
     pub fn new() -> Self {
         Self {
-            name: "".to_string()
+            name: get_random_name(),
         }
     }
 
+    // pub fn all_names(self) -> Vec<String> {
+    //     let mut names: Vec<String> = vec![];
+    //     for c in 'A'..='Z' {
+    //         for d in 'A'..='Z' {
+    //             for n in 0..1_000 {
+    //                 names.push(format!("{}{}{:03}", c, d, n));
+    //             }
+    //         }
+    //     }
+    //     names
+    // }
+
     pub fn name(&self) -> &str {
-        unimplemented!("Return the reference to the robot's name.");
+        return self.name.as_str();
     }
 
     pub fn reset_name(&mut self) {
-        unimplemented!("Assign a new unique name to the robot.");
+        self.name = get_random_name();
     }
 }
 
+fn get_random_name() -> String {
+    let unix_ts: u64 = SystemTime::now()
+        .duration_since(SystemTime::UNIX_EPOCH)
+        .unwrap()
+        .as_nanos() as u64;
+    let mut rng = rand_chacha::ChaCha8Rng::seed_from_u64(unix_ts);
+    let first_char = rng.gen_range(0..26);
+    let second_char = rng.gen_range(0..26);
+    let number = rng.gen_range(0..1_000);
+    format!(
+        "{}{}{:03}",
+        ALPHABET[first_char], ALPHABET[second_char], number
+    )
+}
 
-// type Robot struct {
-// 	name string
-// }
+// fn name_generator() -> impl Fn() -> String {
 //
-// func nameGenerator() func() (string, error) {
-// 	var names []string
-// 	for c1 := 'A'; c1 <= 'Z'; c1++ {
-// 		for c2 := 'A'; c2 <= 'Z'; c2++ {
-// 			for n := 0; n <= 999; n++ {
-// 				name := string([]rune{c1, c2}) + fmt.Sprintf("%03d", n)
-// 				names = append(names, name)
-// 			}
-// 		}
-// 	}
-// 	index := 0
-// 	return func() (string, error) {
-// 		if index < len(names) {
-// 			name := names[index]
-// 			index++
-// 			return name, nil
-// 		}
-// 		return "", fmt.Errorf("no more names")
-// 	}
-// }
+//     let mut names: Vec<String> = vec![];
+//     let mut index: usize = 0;
 //
-// var generateName = nameGenerator()
+//     let function: fn() -> String = || {
 //
-// func (r *Robot) Name() (string, error) {
-// 	if r.name == "" {
-// 		name, err := generateName()
-// 		if err != nil {
-// 			return "", err
-// 		}
-// 		r.name = name
-// 	}
-// 	return r.name, nil
-// }
-//
-// func (r *Robot) Reset() {
-// 	r.name = ""
+//         match names.get(index) {
+//             Some(name) => name.clone(),
+//             None => panic!("no more names"),
+//         }
+//     };
+//     function
 // }
