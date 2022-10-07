@@ -2,10 +2,7 @@
 pub fn score(word: &str) -> u64 {
     word.chars()
         .filter(char::is_ascii)
-        .collect::<String>()
-        .to_uppercase()
-        .chars()
-        .map(|c| match c {
+        .map(|c| match c.to_ascii_uppercase() {
             'A' | 'E' | 'I' | 'O' | 'U' | 'L' | 'N' | 'R' | 'S' | 'T' => 1,
             'D' | 'G' => 2,
             'B' | 'C' | 'M' | 'P' => 3,
