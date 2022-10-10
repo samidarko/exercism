@@ -12,8 +12,8 @@ pub fn number(user_number: &str) -> Option<String> {
         return None;
     }
 
-    if let (Some(first), Some(second)) = (user_number.chars().nth(0), user_number.chars().nth(3)) {
-        if first.to_digit(10).unwrap() < 2 || second.to_digit(10).unwrap() < 2 {
+    if let (Some(first), Some(third)) = (user_number.chars().nth(0), user_number.chars().nth(3)) {
+        if first.to_digit(10).unwrap() < 2 || third.to_digit(10).unwrap() < 2 {
             return None;
         }
     }
