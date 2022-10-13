@@ -1,5 +1,6 @@
 use std::cmp::Ordering;
 use std::collections::HashMap;
+use std::iter::once;
 
 #[derive(Clone)]
 struct Stat {
@@ -72,15 +73,21 @@ pub fn tally(match_results: &str) -> String {
         Ordering::Equal => a.name.cmp(&b.name),
         _ => b.points.cmp(&a.points),
     });
-    let mut output: Vec<String> = vec![];
-    output.push(format!(
+
+    let next_rows = stats
+        .iter()
+        .map(|stat| {
+            format!(
+                "{:31}|{:3} |{:3} |{:3} |{:3} |{:3}",
+                stat.name, stat.played, stat.won, stat.drawn, stat.lost, stat.points
+            )
+        })
+        .collect::<Vec<String>>();
+
+    once(format!(
         "Team                           | MP |  W |  D |  L |  P"
-    ));
-    for stat in stats {
-        output.push(format!(
-            "{:31}|{:3} |{:3} |{:3} |{:3} |{:3}",
-            stat.name, stat.played, stat.won, stat.drawn, stat.lost, stat.points
-        ))
-    }
-    output.join("\n")
+    ))
+    .chain(next_rows.into_iter())
+    .collect::<Vec<String>>()
+    .join("\n")
 }
