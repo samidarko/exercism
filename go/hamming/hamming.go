@@ -3,12 +3,11 @@ package hamming
 import "errors"
 
 func Distance(a, b string) (int, error) {
-	aLen := len(a)
-	if aLen == len(b) {
+	if len(a) == len(b) {
 
 		var errorCount int
 
-		for i := 0; i < aLen; i++ {
+		for i := 0; i < len(a); i++ {
 
 			if a[i] != b[i] {
 				errorCount++
