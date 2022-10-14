@@ -8,7 +8,7 @@ import (
 
 // Number return phone number
 func Number(input string) (string, error) {
-	reg := regexp.MustCompile(`[^\d]`)
+	reg := regexp.MustCompile(`\D`)
 	input = reg.ReplaceAllString(input, "")
 
 	if len(input) > 0 && input[0] == '1' {
