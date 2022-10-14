@@ -9,20 +9,20 @@ import (
 
 func Encode(s string) string {
 	runes := normalize(s)
-	sLen := len(runes)
-	sqrt := math.Sqrt(float64(sLen))
+	sqrt := math.Sqrt(float64(len(runes)))
 	r := int(math.Round(sqrt))
 	c := r
-	var output strings.Builder
 
 	if float64(r) < sqrt {
 		c = r + 1
 	}
 
+	var output strings.Builder
+
 	for i := 0; i < c; i++ {
 		for j := 0; j < r; j++ {
 			offset := i + j*c
-			if offset < sLen {
+			if offset < len(runes) {
 				output.WriteRune(runes[offset])
 			} else {
 				output.WriteRune(' ')
