@@ -1,6 +1,9 @@
 use std::cmp::Ordering;
 
-pub fn find(array: &[i32], key: i32) -> Option<usize> {
+pub fn find<T>(array: &[T], key: T) -> Option<usize>
+where
+    T: Ord,
+{
     if array.is_empty() {
         return None;
     }
