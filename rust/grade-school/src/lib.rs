@@ -9,7 +9,7 @@ use std::collections::{HashMap, HashSet};
 pub struct School {
     data: HashMap<u32, HashSet<String>>,
 }
-// <'a>
+
 impl School {
     pub fn new() -> School {
         Self {
@@ -18,23 +18,17 @@ impl School {
     }
 
     pub fn add(&mut self, grade: u32, student: &str) {
-        match self.data.get_mut(&grade) {
-            Some(value) => {
-                value.insert(student.to_string());
-            }
-            None => {
-                self.data
-                    .insert(grade, HashSet::from([student.to_string()]));
-            }
-        }
+        self.data
+            .entry(grade)
+            .and_modify(|students| {
+                students.insert(student.to_string());
+            })
+            .or_insert(HashSet::from([student.to_string()]));
     }
 
     pub fn grades(&self) -> Vec<u32> {
-        let mut g: Vec<u32> = vec![];
-        for grade in self.data.keys() {
-            g.push(*grade);
-        }
-        g.sort_unstable();
+        let mut g: Vec<u32> = self.data.keys().copied().collect();
+        g.sort();
         g
     }
 
@@ -47,9 +41,9 @@ impl School {
             Some(students) => {
                 let students: HashSet<String> = students.clone();
                 let mut grades: Vec<String> = students.into_iter().collect();
-                grades.sort_unstable();
+                grades.sort();
                 grades
-            },
+            }
             None => vec![],
         }
     }
