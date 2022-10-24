@@ -27,7 +27,7 @@ func Sum(p int) []Triplet {
 
 	for a := 1; a <= p; a++ {
 		for b := a + 1; b <= p; b++ {
-			c = p - a - b
+			c = p - (a + b)
 			if (a*a+b*b) == c*c && (a+b+c) == p {
 				triplets = append(triplets, Triplet{a, b, c})
 			}
