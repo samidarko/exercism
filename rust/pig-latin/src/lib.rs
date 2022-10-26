@@ -12,7 +12,7 @@ trait PigLatin {
     fn to_pig_latin(&self) -> String;
 }
 
-impl PigLatin for &str {
+impl PigLatin for str {
     fn to_pig_latin(&self) -> String {
         if self.is_empty() {
             return "".to_string();
@@ -53,11 +53,9 @@ impl PigLatin for &str {
 }
 
 pub fn translate(input: &str) -> String {
-    let mut translation: Vec<String> = vec![];
-    for word in input.split(" ") {
-        translation.push(word.to_pig_latin());
-    }
-    translation.join(" ")
+    input
+        .split(" ")
+        .map(str::to_pig_latin)
+        .collect::<Vec<_>>()
+        .join(" ")
 }
-
-// TODO add interface is_vowel to char
