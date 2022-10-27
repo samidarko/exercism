@@ -29,9 +29,9 @@ impl Bucket {
     pub fn new(size: u8, name: BucketName) -> Self {
         Self {
             size,
+            name,
             quantity: 0,
             num_steps: 0,
-            name,
         }
     }
     pub fn empty(&mut self) {
@@ -96,20 +96,19 @@ pub fn solve(
         other_bucket.fill()
     }
 
-    // while current_bucket.quantity != goal && other_bucket.quantity != goal {
-    //     if current_bucket.is_empty() {
-    // 		current_bucket.fill();
-    //     } else if other_bucket.is_full() {
-    // 		other_bucket.empty();
-    //     } else {
-    // 		current_bucket.pour(other_bucket);
-    //     }
-    // }
+    while current_bucket.quantity != goal && other_bucket.quantity != goal {
+        if current_bucket.is_empty() {
+            current_bucket.fill();
+        } else if other_bucket.is_full() {
+            other_bucket.empty();
+        } else {
+            current_bucket.pour(&mut other_bucket);
+        }
+    }
 
     let moves = current_bucket.num_steps + other_bucket.num_steps;
 
     if current_bucket.quantity == goal {
-        // return current_bucket.name, num_steps, otherBucket.quantity, nil
         return Some(BucketStats {
             moves,
             goal_bucket: current_bucket.name,
@@ -117,9 +116,9 @@ pub fn solve(
         });
     }
 
-    return Some(BucketStats {
+    Some(BucketStats {
         moves,
         goal_bucket: other_bucket.name,
         other_bucket: current_bucket.quantity,
-    });
+    })
 }
