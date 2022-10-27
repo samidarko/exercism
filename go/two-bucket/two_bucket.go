@@ -33,6 +33,14 @@ func (b *Bucket) Pour(into *Bucket) {
 	b.numSteps++
 }
 
+func (b *Bucket) IsEmpty() bool {
+	return b.quantity == 0
+}
+
+func (b *Bucket) IsFull() bool {
+	return b.quantity == b.size
+}
+
 func Solve(sizeBucketOne, sizeBucketTwo, goalAmount int, startBucket string) (string, int, int, error) {
 	if sizeBucketOne <= 0 || sizeBucketTwo <= 0 || goalAmount <= 0 {
 		return "", 0, 0, errors.New("negative or zero not accepted for bucket size or goal amount")
@@ -60,9 +68,9 @@ func Solve(sizeBucketOne, sizeBucketTwo, goalAmount int, startBucket string) (st
 
 	for currentBucket.quantity != goalAmount && otherBucket.quantity != goalAmount {
 		switch {
-		case currentBucket.quantity == 0:
+		case currentBucket.IsEmpty():
 			currentBucket.Fill()
-		case otherBucket.quantity == otherBucket.size:
+		case otherBucket.IsFull():
 			otherBucket.Empty()
 		default:
 			currentBucket.Pour(&otherBucket)
