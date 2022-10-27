@@ -1,0 +1,7 @@
+[package]
+edition = "2021"
+name = "two-bucket"
+version = "1.4.0"
+
+[dependencies]
+num = "0.4.0"
