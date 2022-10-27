@@ -1,7 +1,7 @@
 use num::integer::gcd;
 
 #[derive(PartialEq, Eq, Debug, Hash)]
-pub enum BucketName {
+pub enum Bucket {
     One,
     Two,
 }
@@ -13,20 +13,20 @@ pub struct BucketStats {
     /// the first fill.
     pub moves: u8,
     /// Which bucket should end up with the desired number of liters? (Either "one" or "two")
-    pub goal_bucket: BucketName,
+    pub goal_bucket: Bucket,
     /// How many liters are left in the other bucket?
     pub other_bucket: u8,
 }
 
-pub struct Bucket {
+pub struct SmartBucket {
     size: u8,
     quantity: u8,
     num_steps: u8,
-    name: BucketName,
+    name: Bucket,
 }
 
-impl Bucket {
-    pub fn new(size: u8, name: BucketName) -> Self {
+impl SmartBucket {
+    pub fn new(size: u8, name: Bucket) -> Self {
         Self {
             size,
             name,
@@ -42,7 +42,7 @@ impl Bucket {
         self.quantity = self.size;
         self.num_steps += 1;
     }
-    pub fn pour(&mut self, into: &mut Bucket) {
+    pub fn pour(&mut self, into: &mut SmartBucket) {
         while self.quantity > 0 && into.quantity < into.size {
             self.quantity -= 1;
             into.quantity += 1;
@@ -57,10 +57,10 @@ impl Bucket {
     }
 }
 
-pub fn next_bucket(bucket_name: &BucketName) -> BucketName {
+pub fn next_bucket(bucket_name: &Bucket) -> Bucket {
     match bucket_name {
-        BucketName::One => BucketName::Two,
-        BucketName::Two => BucketName::One,
+        Bucket::One => Bucket::Two,
+        Bucket::Two => Bucket::One,
     }
 }
 
@@ -69,7 +69,7 @@ pub fn solve(
     capacity_1: u8,
     capacity_2: u8,
     goal: u8,
-    start_bucket: &BucketName,
+    start_bucket: &Bucket,
 ) -> Option<BucketStats> {
     if capacity_1 == 0 || capacity_2 == 0 || goal == 0 {
         return None;
@@ -80,13 +80,13 @@ pub fn solve(
     }
 
     let (mut current_bucket, mut other_bucket) = match start_bucket {
-        BucketName::One => (
-            Bucket::new(capacity_1, BucketName::One),
-            Bucket::new(capacity_2, BucketName::Two),
+        Bucket::One => (
+            SmartBucket::new(capacity_1, Bucket::One),
+            SmartBucket::new(capacity_2, Bucket::Two),
         ),
-        BucketName::Two => (
-            Bucket::new(capacity_2, BucketName::Two),
-            Bucket::new(capacity_1, BucketName::One),
+        Bucket::Two => (
+            SmartBucket::new(capacity_2, Bucket::Two),
+            SmartBucket::new(capacity_1, Bucket::One),
         ),
     };
 
