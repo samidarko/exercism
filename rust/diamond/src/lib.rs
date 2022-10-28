@@ -16,15 +16,15 @@ pub fn get_diamond(c: char) -> Vec<String> {
         row[left] = current_char;
         row[right] = current_char;
         if position < middle {
-            current_char += 1;
             left -= 1;
-            right += 1
+            right += 1;
+            current_char += 1;
         } else {
-            current_char -= 1;
             left += 1;
-            right -= 1
+            right -= 1;
+            current_char -= 1;
         }
-        diamond.push(row.into_iter().map(|c| c as char).collect::<String>())
+        diamond.push(String::from_utf8(row).unwrap())
     }
 
     diamond
