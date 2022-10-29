@@ -1,4 +1,4 @@
-use std::iter::repeat;
+use rand::prelude::*;
 
 const A: u8 = 'a' as u8;
 const Z: u8 = 'z' as u8;
@@ -23,7 +23,7 @@ pub fn transform(key: &str, s: &str, apply: fn(u8, u8) -> u8) -> Option<String> 
     }
     let decoding = s
         .chars()
-        .zip(repeat(key.chars()).flat_map(|c| c))
+        .zip(key.chars().cycle())
         .map(|(c, k)| {
             let order = k as u8 - A;
             wrap(apply(c as u8, order))
@@ -33,10 +33,15 @@ pub fn transform(key: &str, s: &str, apply: fn(u8, u8) -> u8) -> Option<String> 
 }
 
 pub fn encode_random(s: &str) -> (String, String) {
-    unimplemented!(
-        "Generate random key with only a-z chars and encode {}. Return tuple (key, encoded s)",
-        s
-    )
+    // (key, encoding)
+    let mut key = ('a'..='z').cycle().take(26 * 4).collect::<Vec<char>>();
+    let mut rng = rand::thread_rng();
+    key.shuffle(&mut rng);
+
+    let key: String = key.iter().collect();
+    // let ref_key = key.as_ref();
+
+    (key.clone(), encode(key.as_ref(), s).unwrap())
 }
 
 pub fn wrap(c: u8) -> char {
