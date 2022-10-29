@@ -28,7 +28,7 @@ pub fn transform(key: &str, s: &str, apply: fn(u8, u8) -> u8) -> Option<String> 
             let order = k as u8 - A;
             wrap(apply(c as u8, order))
         })
-        .collect::<String>();
+        .collect();
     Some(decoding)
 }
 
