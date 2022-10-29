@@ -33,15 +33,14 @@ pub fn transform(key: &str, s: &str, apply: fn(u8, u8) -> u8) -> Option<String> 
 }
 
 pub fn encode_random(s: &str) -> (String, String) {
-    // (key, encoding)
+    let mut rng = thread_rng();
     let mut key = ('a'..='z').cycle().take(26 * 4).collect::<Vec<char>>();
-    let mut rng = rand::thread_rng();
     key.shuffle(&mut rng);
 
     let key: String = key.iter().collect();
-    // let ref_key = key.as_ref();
+    let encoding = encode(key.as_ref(), s).unwrap();
 
-    (key.clone(), encode(key.as_ref(), s).unwrap())
+    (key, encoding)
 }
 
 pub fn wrap(c: u8) -> char {
