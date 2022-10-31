@@ -25,7 +25,6 @@ fn test_eq() {
 }
 
 #[test]
-#[ignore]
 fn test_ne() {
     assert!(decimal("0.0") != decimal("1.0"));
     assert!(decimal(BIGS[0]) != decimal(BIGS[1]));
