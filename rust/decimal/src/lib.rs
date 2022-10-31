@@ -1,10 +1,17 @@
 use num_bigint::{BigUint, ToBigUint};
 use num_traits::One;
+use num_integer::Integer;
 
-#[derive(Eq, PartialEq)]
 pub struct Decimal {
     numerator: BigUint,
     denominator: BigUint,
+}
+
+impl PartialEq for Decimal {
+    fn eq(&self, other: &Self) -> bool {
+        let lcm = self.denominator.lcm(&other.denominator);
+        &self.numerator * (&self.denominator / &lcm) == &other.numerator * (&other.denominator / &lcm)
+    }
 }
 
 impl Decimal {
