@@ -8,15 +8,17 @@ pub fn private_key(p: u64) -> u64 {
 
 pub fn public_key(p: u64, g: u64, a: u64) -> u64 {
     // g.pow(a as u32) % p
-    modular_pow(g as u128, a, p as u128)
+    modular_pow(g, a, p)
 }
 
 pub fn secret(p: u64, b_pub: u64, a: u64) -> u64 {
     // b_pub.pow(a as u32) % p
-    modular_pow(b_pub as u128, a, p as u128)
+    modular_pow(b_pub, a, p)
 }
 
-pub fn modular_pow(mut base: u128, mut exponent: u64, modulus: u128) -> u64 {
+pub fn modular_pow(base: u64, mut exponent: u64, modulus: u64) -> u64 {
+    let mut base = base as u128;
+    let modulus = modulus as u128;
     if modulus == 1 {
         return 0;
     }
