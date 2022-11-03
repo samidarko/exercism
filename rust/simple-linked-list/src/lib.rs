@@ -6,7 +6,6 @@ type Link<T> = Option<Box<Node<T>>>;
 pub struct Node<T> {
     value: T,
     next: Link<T>,
-
 }
 
 // #[derive(Clone)]
@@ -14,12 +13,12 @@ pub struct SimpleLinkedList<T> {
     // Delete this field
     // dummy is needed to avoid unused parameter error during compilation
     head: Link<T>,
-    size: usize
+    size: usize,
 }
 
 impl<T: Copy> SimpleLinkedList<T> {
     pub fn new() -> Self {
-        Self{
+        Self {
             head: None,
             size: 0,
         }
@@ -56,29 +55,24 @@ impl<T: Copy> SimpleLinkedList<T> {
     }
 
     pub fn peek(&self) -> Option<&T> {
-        self.head.as_ref().map(|node| {
-            &node.value
-        })
+        self.head.as_ref().map(|node| &node.value)
     }
 
     #[must_use]
-    pub fn rev(self) -> SimpleLinkedList<T> {
-        // let mut elements: Vec<T> = self.into();
-        // elements.reverse();
-        // elements.drain(..).collect()
+    pub fn rev(mut self) -> SimpleLinkedList<T> {
+        let mut previous = None;
+        let mut current = self.head.take();
+
+        while let Some(mut node) = current.take() {
+            let next = node.next.take();
+            node.next = previous.take();
+            previous = Some(node);
+            current = next;
+        }
+
+        self.head = previous.take();
         self
     }
-    // func (l *List) Reverse() *List {
-    // 	var prev, curr, next *Element
-    // 	curr = l.head
-    // 	for curr != nil {
-    // 		next = curr.next
-    // 		curr.next = prev
-    // 		prev, curr = curr, next
-    // 	}
-    // 	l.head = prev
-    // 	return l
-    // }
 }
 
 impl<T: Copy> FromIterator<T> for SimpleLinkedList<T> {
