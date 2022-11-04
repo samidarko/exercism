@@ -16,8 +16,7 @@ func LargestSeriesProduct(digits string, span int) (int64, error) {
 		return -1, errors.New("span must be greater than zero")
 	}
 
-	digitsLen := len(digits)
-	if digitsLen < span {
+	if len(digits) < span {
 		return -1, errors.New("span must be smaller than string length")
 	}
 
@@ -27,7 +26,7 @@ func LargestSeriesProduct(digits string, span int) (int64, error) {
 
 	var largestSeriesProduct int64 = 0
 
-	for i := 0; (i + span) <= digitsLen; i++ {
+	for i := 0; (i + span) <= len(digits); i++ {
 		temp := seriesProduct(digits[i : i+span])
 		if temp > largestSeriesProduct {
 			largestSeriesProduct = temp
