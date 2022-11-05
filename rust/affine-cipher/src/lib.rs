@@ -22,16 +22,12 @@ pub fn encode(plaintext: &str, a: i32, b: i32) -> Result<String, AffineCipherErr
         return Err(NotCoprime(a));
     }
 
-    let plaintext: String = plaintext
-        .to_lowercase()
-        .chars()
-        .filter(|c| c.is_alphanumeric())
-        .collect();
-
     let letter_index: HashMap<char, i32> = HashMap::from_iter(ALPHABET.into_iter().zip(0..));
 
     let encoding = plaintext
+        .to_lowercase()
         .chars()
+        .filter(|c| c.is_alphanumeric())
         .map(|c| match letter_index.get(&c) {
             Some(x) => {
                 let index = (a * x + b) % m;
@@ -41,12 +37,12 @@ pub fn encode(plaintext: &str, a: i32, b: i32) -> Result<String, AffineCipherErr
         })
         .collect::<Vec<_>>();
 
-    let encoding = encoding
+    let encoding_chunks = encoding
         .chunks(5)
         .map(|s| s.iter().collect())
         .collect::<Vec<String>>();
 
-    Ok(encoding.join(" "))
+    Ok(encoding_chunks.join(" "))
 }
 
 /// Decodes the ciphertext using the affine cipher with key (`a`, `b`). Note that, rather than
