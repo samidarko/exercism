@@ -33,6 +33,17 @@ func (f *Frame) ThrowsCount() int {
 	return len(f.throws)
 }
 
+// AddPins add pins to a frame
+func (f *Frame) AddPins(pins int) {
+	f.throws = append(f.throws, pins)
+	switch {
+	case f.TotalPinsCount() == 10 && f.ThrowsCount() == 1:
+		f.tabulation = Strike
+	case f.TotalPinsCount() == 10 && f.ThrowsCount() == 2:
+		f.tabulation = Spare
+	}
+}
+
 // Game type here.
 type Game struct {
 	frames  [10]Frame
@@ -59,14 +70,7 @@ func (g *Game) Roll(pins int) error {
 		return fmt.Errorf("game is over")
 	}
 
-	g.CurrentFrame().throws = append(g.CurrentFrame().throws, pins)
-
-	switch {
-	case g.CurrentFrame().TotalPinsCount() == 10 && g.CurrentFrame().ThrowsCount() == 1:
-		g.CurrentFrame().tabulation = Strike
-	case g.CurrentFrame().TotalPinsCount() == 10 && g.CurrentFrame().ThrowsCount() == 2:
-		g.CurrentFrame().tabulation = Spare
-	}
+	g.CurrentFrame().AddPins(pins)
 
 	// validate score
 	if g.current < 9 && g.CurrentFrame().TotalPinsCount() > 10 {
