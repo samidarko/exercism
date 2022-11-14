@@ -5,7 +5,7 @@ import "errors"
 // List type
 type List struct {
 	head *Element
-	size int
+	size uint
 }
 
 // Element type
@@ -34,7 +34,7 @@ func (l *List) Push(value int) {
 }
 
 // Size returns the List size
-func (l *List) Size() int {
+func (l *List) Size() uint {
 	return l.size
 }
 

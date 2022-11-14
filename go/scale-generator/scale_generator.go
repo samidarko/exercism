@@ -22,7 +22,7 @@ func parse(s string) []int {
 	return notes
 }
 
-//tonicIndex the index of a tonic (as major or minor) in a list
+// tonicIndex the index of a tonic (as major or minor) in a list
 func tonicIndex(tonic string, chromatic []string) int {
 	for i := range chromatic {
 		if strings.ToUpper(chromatic[i]) == strings.ToUpper(tonic) {
@@ -32,7 +32,7 @@ func tonicIndex(tonic string, chromatic []string) int {
 	panic(fmt.Sprintf("tonic %v not found", tonic))
 }
 
-//Scale returns the list of notes in scale given by a tonic and a set of intervals
+// Scale returns the list of notes in scale given by a tonic and a set of intervals
 func Scale(tonic, interval string) []string {
 	notes := parse(interval)
 	var out []string
