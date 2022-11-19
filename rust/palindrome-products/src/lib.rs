@@ -8,8 +8,15 @@ pub struct Palindrome(u64);
 impl Palindrome {
     /// Create a `Palindrome` only if `value` is in fact a palindrome when represented in base ten. Otherwise, `None`.
     pub fn new(value: u64) -> Option<Palindrome> {
-        let s = value.to_string();
-        if s == s.chars().rev().collect::<String>() {
+        let mut reversed = 0;
+        let mut n = value;
+
+        while n != 0 {
+            reversed = reversed * 10 + n % 10;
+            n = n / 10;
+        }
+
+        if value == reversed {
             return Some(Palindrome(value));
         }
         None
@@ -48,8 +55,5 @@ pub fn palindrome_products(min: u64, max: u64) -> Option<(Palindrome, Palindrome
         return None;
     }
 
-    return Some((
-        Palindrome::new(min_palindrome).unwrap(),
-        Palindrome::new(max_palindrome).unwrap(),
-    ));
+    return Some((Palindrome(min_palindrome), Palindrome(max_palindrome)));
 }
