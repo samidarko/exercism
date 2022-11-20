@@ -22,15 +22,13 @@ impl Queen {
     }
 
     pub fn can_attack(&self, other: &Queen) -> bool {
-        if self.0.rank == other.0.rank || self.0.file == other.0.file {
+        let rank_diff = (other.0.rank - self.0.rank).abs();
+        let file_diff = (other.0.file - self.0.file).abs();
+
+        if rank_diff == 0 || file_diff == 0 || rank_diff == file_diff {
             return true;
         }
 
-        // The rows (y) of a chessboard are known as ranks and columns (x) are known as files
-        let numerator = other.0.rank - self.0.rank;
-        let denominator = other.0.file - self.0.file;
-        let slope = numerator / denominator;
-
-        slope.abs() == 1
+        false
     }
 }
