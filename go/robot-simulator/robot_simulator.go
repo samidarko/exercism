@@ -55,14 +55,15 @@ func (d Dir) String() string {
 type Action int
 
 func StartRobot(command chan Command, action chan Action) {
+	defer close(action)
+
 	for c := range command {
 		action <- Action(c)
 	}
-
-	close(action)
 }
 
 func Room(extent Rect, robot Step2Robot, action chan Action, report chan Step2Robot) {
+	defer close(report)
 
 	for a := range action {
 		switch a {
@@ -75,18 +76,68 @@ func Room(extent Rect, robot Step2Robot, action chan Action, report chan Step2Ro
 		}
 	}
 	report <- robot
-	close(report)
 }
 
 // Step 3
 
 // Action3 type here.
-type Action3 int
-
-func StartRobot3(name, script string, action chan Action3, log chan string) {
-	panic("Please implement the StartRobot3 function")
+type Action3 struct {
+	Name string
+	Action
 }
 
-func Room3(extent Rect, robots []Step3Robot, action chan Action3, rep chan []Step3Robot, log chan string) {
-	panic("Please implement the Room3 function")
+func StartRobot3(name, script string, action chan Action3, log chan string) {
+	//if name == "" {
+	//	log <- "no name"
+	//	return
+	//}
+	for _, c := range script {
+		action <- Action3{name, Action(c)}
+	}
+	//close(action)
+}
+
+func Room3(extent Rect, robots []Step3Robot, action chan Action3, report chan []Step3Robot, log chan string) {
+	robotsMap := map[string]Step3Robot{}
+	//defer close(action)
+	//defer close(report)
+
+	for _, robot := range robots {
+		if robot.Name == "" {
+			log <- "no name"
+			close(report)
+			return
+		}
+		if _, ok := robotsMap[robot.Name]; ok {
+			log <- fmt.Sprint("duplicate name ", robot.Name)
+			//close(log)
+			close(report)
+			return
+		}
+
+		for _, r := range robotsMap {
+			if r.Pos == robot.Pos {
+				log <- fmt.Sprintf("same position for %s and %s ", robot.Name, r.Name)
+				close(report)
+				return
+			}
+		}
+
+		robotsMap[robot.Name] = robot
+	}
+
+	for a := range action {
+		r := robotsMap[a.Name]
+		switch a.Action {
+		case 'R':
+			r.Right()
+		case 'L':
+			r.Left()
+		case 'A':
+			r.Advance(extent)
+		}
+		robotsMap[a.Name] = r
+	}
+	report <- robots
+	//close(report)
 }
