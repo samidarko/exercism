@@ -1,5 +1,7 @@
 package robot
 
+import "fmt"
+
 // See defs.go for other definitions
 
 // Step 1
@@ -13,29 +15,11 @@ const (
 )
 
 func Right() {
-	switch Step1Robot.Dir {
-	case N:
-		Step1Robot.Dir = E
-	case S:
-		Step1Robot.Dir = W
-	case E:
-		Step1Robot.Dir = S
-	case W:
-		Step1Robot.Dir = N
-	}
+	Step1Robot.Dir = (Step1Robot.Dir + 1) % 4
 }
 
 func Left() {
-	switch Step1Robot.Dir {
-	case N:
-		Step1Robot.Dir = W
-	case S:
-		Step1Robot.Dir = E
-	case E:
-		Step1Robot.Dir = N
-	case W:
-		Step1Robot.Dir = S
-	}
+	Step1Robot.Dir = (Step1Robot.Dir - 1 + 4) % 4
 }
 
 func Advance() {
@@ -52,7 +36,17 @@ func Advance() {
 }
 
 func (d Dir) String() string {
-	panic("Please implement the String function")
+	switch d {
+	case N:
+		return "N"
+	case W:
+		return "W"
+	case S:
+		return "S"
+	case E:
+		return "E"
+	}
+	panic(fmt.Sprintf("unknown direction %s", d.String()))
 }
 
 // Step 2
@@ -61,11 +55,27 @@ func (d Dir) String() string {
 type Action int
 
 func StartRobot(command chan Command, action chan Action) {
-	panic("Please implement the StartRobot function")
+	for c := range command {
+		action <- Action(c)
+	}
+
+	close(action)
 }
 
 func Room(extent Rect, robot Step2Robot, action chan Action, report chan Step2Robot) {
-	panic("Please implement the Room function")
+
+	for a := range action {
+		switch a {
+		case 'R':
+			robot.Right()
+		case 'L':
+			robot.Left()
+		case 'A':
+			robot.Advance(extent)
+		}
+	}
+	report <- robot
+	close(report)
 }
 
 // Step 3

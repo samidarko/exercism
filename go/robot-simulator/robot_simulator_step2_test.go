@@ -3,7 +3,9 @@
 
 package robot
 
-import "testing"
+import (
+	"testing"
+)
 
 var test2 = []struct {
 	Command
