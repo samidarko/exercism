@@ -24,6 +24,17 @@ type Step2Robot struct {
 	Pos
 }
 
+func (r *Step2Robot) IsOutsideRoom(extent Rect) bool {
+	if r.Pos.Easting < extent.Min.Easting || r.Pos.Easting > extent.Max.Easting {
+		return true
+	}
+	if r.Pos.Northing < extent.Min.Northing || r.Pos.Northing > extent.Max.Northing {
+		return true
+	}
+
+	return false
+}
+
 func (r *Step2Robot) Advance(extent Rect) {
 	switch r.Dir {
 	case N:

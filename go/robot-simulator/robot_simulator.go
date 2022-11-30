@@ -87,6 +87,8 @@ type Action3 struct {
 }
 
 func StartRobot3(name, script string, action chan Action3, log chan string) {
+
+	//defer close(action)
 	//if name == "" {
 	//	log <- "no name"
 	//	return
@@ -105,6 +107,11 @@ func Room3(extent Rect, robots []Step3Robot, action chan Action3, report chan []
 	for _, robot := range robots {
 		if robot.Name == "" {
 			log <- "no name"
+			close(report)
+			return
+		}
+		if robot.IsOutsideRoom(extent) {
+			log <- "outside room"
 			close(report)
 			return
 		}
@@ -127,6 +134,11 @@ func Room3(extent Rect, robots []Step3Robot, action chan Action3, report chan []
 	}
 
 	for a := range action {
+		if _, ok := robotsMap[a.Name]; !ok {
+			log <- fmt.Sprintf("bad robot %s ", a.Name)
+			report <- robots
+			close(report)
+		}
 		r := robotsMap[a.Name]
 		switch a.Action {
 		case 'R':
@@ -135,9 +147,15 @@ func Room3(extent Rect, robots []Step3Robot, action chan Action3, report chan []
 			r.Left()
 		case 'A':
 			r.Advance(extent)
+		default:
+			log <- fmt.Sprintf("bad command %c ", rune(a.Action))
+			report <- robots
+			close(report)
+			return
 		}
 		robotsMap[a.Name] = r
 	}
+	close(action)
 	report <- robots
-	//close(report)
+	close(report)
 }
