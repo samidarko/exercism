@@ -72,6 +72,19 @@ func (r *Step2Robot) Advance(extent Rect) error {
 	return nil
 }
 
+func (r *Step2Robot) Back() {
+	switch r.Dir {
+	case N:
+		r.Northing--
+	case S:
+		r.Northing++
+	case E:
+		r.Easting--
+	case W:
+		r.Easting++
+	}
+}
+
 func (r *Step2Robot) Right() {
 	r.Dir = (r.Dir + 1) % 4
 }

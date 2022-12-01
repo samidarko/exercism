@@ -143,6 +143,14 @@ func Room3(extent Rect, robots []Step3Robot, action chan Action3, report chan []
 			if err != nil {
 				log <- "bump into wall"
 			}
+
+			for _, robot := range robotsMap {
+				if r.Name != robot.Name && r.Pos == robot.Pos {
+					log <- "bump into each other"
+					r.Back()
+				}
+			}
+
 		case 'X':
 			robotsMap[a.Name] = r
 			count++

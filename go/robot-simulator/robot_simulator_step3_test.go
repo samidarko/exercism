@@ -42,47 +42,47 @@ func logMon(log chan string, nMsg chan int, t *testing.T) {
 }
 
 // Same tests as step 2; single robot, but expect log messages on wall bumps.
-//func TestOneStep3(t *testing.T) {
-//	for i := 1; i <= len(testOneRobot); i++ {
-//		log := make(chan string)
-//		nMsg := make(chan int)
-//		go logMon(log, nMsg, t)
-//		act := make(chan Action3)
-//		rep := make(chan []Step3Robot)
-//		go Room3(
-//			Rect{Pos{1, 1}, Pos{2, 2}},
-//			[]Step3Robot{{"Robbie", testOneRobot[0].Step2Robot}},
-//			act, rep, log)
-//		scr := ""
-//		for j := 1; j < i; j++ {
-//			scr += string(testOneRobot[j].cmd)
-//		}
-//		t.Logf("Script %q", scr)
-//		go StartRobot3("Robbie", scr, act, log)
-//		pls := <-rep
-//		lastTest := testOneRobot[i-1]
-//		if len(pls) != 1 {
-//			t.Fatalf("Got report on %d robots, want 1.", len(pls))
-//		}
-//		pl := pls[0]
-//		if pl.Name != "Robbie" {
-//			t.Fatalf(`Got report for robot %q, want report for "Robbie".`,
-//				pl.Name)
-//		}
-//		da := pl.Step2Robot
-//		want := lastTest.Step2Robot
-//		if da.Pos != want.Pos {
-//			t.Fatalf("Script %q, Pos = %v, want %v", scr, da.Pos, want.Pos)
-//		}
-//		if da.Dir != want.Dir {
-//			t.Fatalf("Script %q, Dir = %v, want %v", scr, da.Dir, want.Dir)
-//		}
-//		close(log)
-//		if n := <-nMsg; n != lastTest.nMsg {
-//			t.Errorf("%d sim messages logged, want %d.", n, lastTest.nMsg)
-//		}
-//	}
-//}
+func TestOneStep3(t *testing.T) {
+	for i := 1; i <= len(testOneRobot); i++ {
+		log := make(chan string)
+		nMsg := make(chan int)
+		go logMon(log, nMsg, t)
+		act := make(chan Action3)
+		rep := make(chan []Step3Robot)
+		go Room3(
+			Rect{Pos{1, 1}, Pos{2, 2}},
+			[]Step3Robot{{"Robbie", testOneRobot[0].Step2Robot}},
+			act, rep, log)
+		scr := ""
+		for j := 1; j < i; j++ {
+			scr += string(testOneRobot[j].cmd)
+		}
+		t.Logf("Script %q", scr)
+		go StartRobot3("Robbie", scr, act, log)
+		pls := <-rep
+		lastTest := testOneRobot[i-1]
+		if len(pls) != 1 {
+			t.Fatalf("Got report on %d robots, want 1.", len(pls))
+		}
+		pl := pls[0]
+		if pl.Name != "Robbie" {
+			t.Fatalf(`Got report for robot %q, want report for "Robbie".`,
+				pl.Name)
+		}
+		da := pl.Step2Robot
+		want := lastTest.Step2Robot
+		if da.Pos != want.Pos {
+			t.Fatalf("Script %q, Pos = %v, want %v", scr, da.Pos, want.Pos)
+		}
+		if da.Dir != want.Dir {
+			t.Fatalf("Script %q, Dir = %v, want %v", scr, da.Dir, want.Dir)
+		}
+		close(log)
+		if n := <-nMsg; n != lastTest.nMsg {
+			t.Errorf("%d sim messages logged, want %d.", n, lastTest.nMsg)
+		}
+	}
+}
 
 func TestNoName(t *testing.T) {
 	log := make(chan string)
@@ -200,50 +200,50 @@ func TestBadRobot(t *testing.T) {
 	}
 }
 
-func TestThree(t *testing.T) { // no bumping
-	log := make(chan string)
-	nMsg := make(chan int)
-	go logMon(log, nMsg, t)
-	act := make(chan Action3)
-	go StartRobot3("clutz", "LAAARALA", act, log)
-	go StartRobot3("sphero", "RRAAAAALA", act, log)
-	go StartRobot3("roomba", "LAAARRRALLLL", act, log)
-	rep := make(chan []Step3Robot)
-	go Room3(
-		Rect{Pos{-10, -10}, Pos{15, 10}},
-		[]Step3Robot{
-			{"clutz", Step2Robot{N, Pos{0, 0}}},
-			{"sphero", Step2Robot{E, Pos{2, -7}}},
-			{"roomba", Step2Robot{S, Pos{8, 4}}},
-		},
-		act, rep, log)
-	pls := <-rep
-	if len(pls) != 3 {
-		t.Fatalf("Got report on %d robots, want 3.", len(pls))
-	}
-exp:
-	for _, exp := range []Step3Robot{
-		{"clutz", Step2Robot{W, Pos{-4, 1}}},
-		{"sphero", Step2Robot{S, Pos{-3, -8}}},
-		{"roomba", Step2Robot{N, Pos{11, 5}}},
-	} {
-		for _, pl := range pls {
-			if pl.Name != exp.Name {
-				continue
-			}
-			if pl.Step2Robot.Pos != exp.Step2Robot.Pos {
-				t.Fatalf("%s at %v, want %v",
-					pl.Name, pl.Step2Robot.Pos, exp.Step2Robot.Pos)
-			}
-			if pl.Step2Robot.Dir != exp.Step2Robot.Dir {
-				t.Fatalf("%s facing %v, want %v",
-					pl.Name, pl.Step2Robot.Dir, exp.Step2Robot.Dir)
-			}
-			continue exp
-		}
-		t.Fatalf("Missing %s", exp.Name)
-	}
-}
+//func TestThree(t *testing.T) { // no bumping
+//	log := make(chan string)
+//	nMsg := make(chan int)
+//	go logMon(log, nMsg, t)
+//	act := make(chan Action3)
+//	go StartRobot3("clutz", "LAAARALA", act, log)
+//	go StartRobot3("sphero", "RRAAAAALA", act, log)
+//	go StartRobot3("roomba", "LAAARRRALLLL", act, log)
+//	rep := make(chan []Step3Robot)
+//	go Room3(
+//		Rect{Pos{-10, -10}, Pos{15, 10}},
+//		[]Step3Robot{
+//			{"clutz", Step2Robot{N, Pos{0, 0}}},
+//			{"sphero", Step2Robot{E, Pos{2, -7}}},
+//			{"roomba", Step2Robot{S, Pos{8, 4}}},
+//		},
+//		act, rep, log)
+//	pls := <-rep
+//	if len(pls) != 3 {
+//		t.Fatalf("Got report on %d robots, want 3.", len(pls))
+//	}
+//exp:
+//	for _, exp := range []Step3Robot{
+//		{"clutz", Step2Robot{W, Pos{-4, 1}}},
+//		{"sphero", Step2Robot{S, Pos{-3, -8}}},
+//		{"roomba", Step2Robot{N, Pos{11, 5}}},
+//	} {
+//		for _, pl := range pls {
+//			if pl.Name != exp.Name {
+//				continue
+//			}
+//			if pl.Step2Robot.Pos != exp.Step2Robot.Pos {
+//				t.Fatalf("%s at %v, want %v",
+//					pl.Name, pl.Step2Robot.Pos, exp.Step2Robot.Pos)
+//			}
+//			if pl.Step2Robot.Dir != exp.Step2Robot.Dir {
+//				t.Fatalf("%s facing %v, want %v",
+//					pl.Name, pl.Step2Robot.Dir, exp.Step2Robot.Dir)
+//			}
+//			continue exp
+//		}
+//		t.Fatalf("Missing %s", exp.Name)
+//	}
+//}
 
 func TestBattle(t *testing.T) {
 	log := make(chan string)
