@@ -1,6 +1,9 @@
 package robot
 
-import "fmt"
+import (
+	"errors"
+	"fmt"
+)
 
 // definitions used in step 1
 
@@ -24,36 +27,49 @@ type Step2Robot struct {
 	Pos
 }
 
-func (r *Step2Robot) IsOutsideRoom(extent Rect) bool {
+var ErrOutsideRoom = errors.New("outside room")
+
+func (r *Step2Robot) IsOutsideRoom(extent Rect) error {
 	if r.Pos.Easting < extent.Min.Easting || r.Pos.Easting > extent.Max.Easting {
-		return true
+		return ErrOutsideRoom
 	}
 	if r.Pos.Northing < extent.Min.Northing || r.Pos.Northing > extent.Max.Northing {
-		return true
+		return ErrOutsideRoom
 	}
 
-	return false
+	return nil
 }
 
-func (r *Step2Robot) Advance(extent Rect) {
+func (r *Step2Robot) Advance(extent Rect) error {
+
+	outsideRoom := true
+
 	switch r.Dir {
 	case N:
 		if r.Northing < extent.Max.Northing {
 			r.Northing++
+			outsideRoom = false
 		}
 	case S:
 		if r.Northing > extent.Min.Northing {
 			r.Northing--
+			outsideRoom = false
 		}
 	case E:
 		if r.Easting < extent.Max.Easting {
 			r.Easting++
+			outsideRoom = false
 		}
 	case W:
 		if r.Easting > extent.Min.Easting {
 			r.Easting--
+			outsideRoom = false
 		}
 	}
+	if outsideRoom {
+		return ErrOutsideRoom
+	}
+	return nil
 }
 
 func (r *Step2Robot) Right() {

@@ -63,8 +63,6 @@ func StartRobot(command chan Command, action chan Action) {
 }
 
 func Room(extent Rect, robot Step2Robot, action chan Action, report chan Step2Robot) {
-	defer close(report)
-
 	for a := range action {
 		switch a {
 		case 'R':
@@ -72,7 +70,7 @@ func Room(extent Rect, robot Step2Robot, action chan Action, report chan Step2Ro
 		case 'L':
 			robot.Left()
 		case 'A':
-			robot.Advance(extent)
+			_ = robot.Advance(extent)
 		}
 	}
 	report <- robot
@@ -87,45 +85,39 @@ type Action3 struct {
 }
 
 func StartRobot3(name, script string, action chan Action3, log chan string) {
-
-	//defer close(action)
-	//if name == "" {
-	//	log <- "no name"
-	//	return
-	//}
+	defer func() {
+		action <- Action3{name, 'X'}
+	}()
+	if name == "" {
+		log <- "no name"
+		return
+	}
+	if script == "" {
+		//log <- "no script"
+		return
+	}
 	for _, c := range script {
 		action <- Action3{name, Action(c)}
 	}
-	//close(action)
 }
 
 func Room3(extent Rect, robots []Step3Robot, action chan Action3, report chan []Step3Robot, log chan string) {
+	defer func() { report <- robots }()
 	robotsMap := map[string]Step3Robot{}
-	//defer close(action)
-	//defer close(report)
 
 	for _, robot := range robots {
-		if robot.Name == "" {
-			log <- "no name"
-			close(report)
-			return
-		}
-		if robot.IsOutsideRoom(extent) {
+		if err := robot.IsOutsideRoom(extent); err != nil {
 			log <- "outside room"
-			close(report)
 			return
 		}
 		if _, ok := robotsMap[robot.Name]; ok {
 			log <- fmt.Sprint("duplicate name ", robot.Name)
-			//close(log)
-			close(report)
 			return
 		}
 
 		for _, r := range robotsMap {
 			if r.Pos == robot.Pos {
 				log <- fmt.Sprintf("same position for %s and %s ", robot.Name, r.Name)
-				close(report)
 				return
 			}
 		}
@@ -133,11 +125,12 @@ func Room3(extent Rect, robots []Step3Robot, action chan Action3, report chan []
 		robotsMap[robot.Name] = robot
 	}
 
+	count := 0
+
 	for a := range action {
 		if _, ok := robotsMap[a.Name]; !ok {
 			log <- fmt.Sprintf("bad robot %s ", a.Name)
-			report <- robots
-			close(report)
+			return
 		}
 		r := robotsMap[a.Name]
 		switch a.Action {
@@ -146,16 +139,21 @@ func Room3(extent Rect, robots []Step3Robot, action chan Action3, report chan []
 		case 'L':
 			r.Left()
 		case 'A':
-			r.Advance(extent)
+			err := r.Advance(extent)
+			if err != nil {
+				log <- "bump into wall"
+			}
+		case 'X':
+			robotsMap[a.Name] = r
+			count++
+			if count == len(robots) {
+				return
+			}
+			continue
 		default:
 			log <- fmt.Sprintf("bad command %c ", rune(a.Action))
-			report <- robots
-			close(report)
 			return
 		}
 		robotsMap[a.Name] = r
 	}
-	close(action)
-	report <- robots
-	close(report)
 }
