@@ -152,7 +152,6 @@ func Room3(extent Rect, robots []Step3Robot, action chan Action3, report chan []
 			if count == len(robots) {
 				return
 			}
-			continue
 		default:
 			log <- fmt.Sprintf("bad command %c ", rune(a.Action))
 			return
