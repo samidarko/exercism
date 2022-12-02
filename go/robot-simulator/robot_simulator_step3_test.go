@@ -200,50 +200,50 @@ func TestBadRobot(t *testing.T) {
 	}
 }
 
-//func TestThree(t *testing.T) { // no bumping
-//	log := make(chan string)
-//	nMsg := make(chan int)
-//	go logMon(log, nMsg, t)
-//	act := make(chan Action3)
-//	go StartRobot3("clutz", "LAAARALA", act, log)
-//	go StartRobot3("sphero", "RRAAAAALA", act, log)
-//	go StartRobot3("roomba", "LAAARRRALLLL", act, log)
-//	rep := make(chan []Step3Robot)
-//	go Room3(
-//		Rect{Pos{-10, -10}, Pos{15, 10}},
-//		[]Step3Robot{
-//			{"clutz", Step2Robot{N, Pos{0, 0}}},
-//			{"sphero", Step2Robot{E, Pos{2, -7}}},
-//			{"roomba", Step2Robot{S, Pos{8, 4}}},
-//		},
-//		act, rep, log)
-//	pls := <-rep
-//	if len(pls) != 3 {
-//		t.Fatalf("Got report on %d robots, want 3.", len(pls))
-//	}
-//exp:
-//	for _, exp := range []Step3Robot{
-//		{"clutz", Step2Robot{W, Pos{-4, 1}}},
-//		{"sphero", Step2Robot{S, Pos{-3, -8}}},
-//		{"roomba", Step2Robot{N, Pos{11, 5}}},
-//	} {
-//		for _, pl := range pls {
-//			if pl.Name != exp.Name {
-//				continue
-//			}
-//			if pl.Step2Robot.Pos != exp.Step2Robot.Pos {
-//				t.Fatalf("%s at %v, want %v",
-//					pl.Name, pl.Step2Robot.Pos, exp.Step2Robot.Pos)
-//			}
-//			if pl.Step2Robot.Dir != exp.Step2Robot.Dir {
-//				t.Fatalf("%s facing %v, want %v",
-//					pl.Name, pl.Step2Robot.Dir, exp.Step2Robot.Dir)
-//			}
-//			continue exp
-//		}
-//		t.Fatalf("Missing %s", exp.Name)
-//	}
-//}
+func TestThree(t *testing.T) { // no bumping
+	log := make(chan string)
+	nMsg := make(chan int)
+	go logMon(log, nMsg, t)
+	act := make(chan Action3)
+	go StartRobot3("clutz", "LAAARALA", act, log)
+	go StartRobot3("sphero", "RRAAAAALA", act, log)
+	go StartRobot3("roomba", "LAAARRRALLLL", act, log)
+	rep := make(chan []Step3Robot)
+	go Room3(
+		Rect{Pos{-10, -10}, Pos{15, 10}},
+		[]Step3Robot{
+			{"clutz", Step2Robot{N, Pos{0, 0}}},
+			{"sphero", Step2Robot{E, Pos{2, -7}}},
+			{"roomba", Step2Robot{S, Pos{8, 4}}},
+		},
+		act, rep, log)
+	pls := <-rep
+	if len(pls) != 3 {
+		t.Fatalf("Got report on %d robots, want 3.", len(pls))
+	}
+exp:
+	for _, exp := range []Step3Robot{
+		{"clutz", Step2Robot{W, Pos{-4, 1}}},
+		{"sphero", Step2Robot{S, Pos{-3, -8}}},
+		{"roomba", Step2Robot{N, Pos{11, 5}}},
+	} {
+		for _, pl := range pls {
+			if pl.Name != exp.Name {
+				continue
+			}
+			if pl.Step2Robot.Pos != exp.Step2Robot.Pos {
+				t.Fatalf("%s at %v, want %v",
+					pl.Name, pl.Step2Robot.Pos, exp.Step2Robot.Pos)
+			}
+			if pl.Step2Robot.Dir != exp.Step2Robot.Dir {
+				t.Fatalf("%s facing %v, want %v",
+					pl.Name, pl.Step2Robot.Dir, exp.Step2Robot.Dir)
+			}
+			continue exp
+		}
+		t.Fatalf("Missing %s", exp.Name)
+	}
+}
 
 func TestBattle(t *testing.T) {
 	log := make(chan string)

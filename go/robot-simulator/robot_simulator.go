@@ -92,10 +92,6 @@ func StartRobot3(name, script string, action chan Action3, log chan string) {
 		log <- "no name"
 		return
 	}
-	if script == "" {
-		//log <- "no script"
-		return
-	}
 	for _, c := range script {
 		action <- Action3{name, Action(c)}
 	}
@@ -103,9 +99,9 @@ func StartRobot3(name, script string, action chan Action3, log chan string) {
 
 func Room3(extent Rect, robots []Step3Robot, action chan Action3, report chan []Step3Robot, log chan string) {
 	defer func() { report <- robots }()
-	robotsMap := map[string]Step3Robot{}
+	robotsMap := map[string]int{}
 
-	for _, robot := range robots {
+	for i, robot := range robots {
 		if err := robot.IsOutsideRoom(extent); err != nil {
 			log <- "outside room"
 			return
@@ -115,14 +111,14 @@ func Room3(extent Rect, robots []Step3Robot, action chan Action3, report chan []
 			return
 		}
 
-		for _, r := range robotsMap {
-			if r.Pos == robot.Pos {
-				log <- fmt.Sprintf("same position for %s and %s ", robot.Name, r.Name)
+		for _, robotIndex := range robotsMap {
+			if robots[robotIndex].Pos == robot.Pos {
+				log <- fmt.Sprintf("same position for %s and %s ", robot.Name, robots[robotIndex].Name)
 				return
 			}
 		}
 
-		robotsMap[robot.Name] = robot
+		robotsMap[robot.Name] = i
 	}
 
 	count := 0
@@ -132,27 +128,26 @@ func Room3(extent Rect, robots []Step3Robot, action chan Action3, report chan []
 			log <- fmt.Sprintf("bad robot %s ", a.Name)
 			return
 		}
-		r := robotsMap[a.Name]
+
 		switch a.Action {
 		case 'R':
-			r.Right()
+			robots[robotsMap[a.Name]].Right()
 		case 'L':
-			r.Left()
+			robots[robotsMap[a.Name]].Left()
 		case 'A':
-			err := r.Advance(extent)
+			err := robots[robotsMap[a.Name]].Advance(extent)
 			if err != nil {
 				log <- "bump into wall"
 			}
 
-			for _, robot := range robotsMap {
-				if r.Name != robot.Name && r.Pos == robot.Pos {
+			for robotName, robotIndex := range robotsMap {
+				if robots[robotsMap[a.Name]].Name != robotName && robots[robotsMap[a.Name]].Pos == robots[robotIndex].Pos {
 					log <- "bump into each other"
-					r.Back()
+					robots[robotsMap[a.Name]].Back()
 				}
 			}
 
 		case 'X':
-			robotsMap[a.Name] = r
 			count++
 			if count == len(robots) {
 				return
@@ -162,6 +157,5 @@ func Room3(extent Rect, robots []Step3Robot, action chan Action3, report chan []
 			log <- fmt.Sprintf("bad command %c ", rune(a.Action))
 			return
 		}
-		robotsMap[a.Name] = r
 	}
 }
