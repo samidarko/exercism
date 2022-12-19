@@ -6,15 +6,48 @@ import (
 	"strings"
 )
 
+func pow(n, power int) int {
+	if power == 0 {
+		return 1
+	}
+	result := n
+	for i := 2; i <= power; i++ {
+		result *= n
+	}
+	return result
+}
+
+type Word struct {
+	word    string
+	letters map[string]int
+}
+
+func (w *Word) Value() int {
+	result := 0
+	position := len(w.letters)
+
+	for _, l := range w.word {
+		result += w.letters[string(l)] * pow(10, position)
+		position--
+	}
+
+	return result
+}
+
 func Solve(puzzle string) (map[string]int, error) {
 	terms, sum, letters, valid := parse(puzzle)
-	fmt.Println(terms)
-	fmt.Println(sum)
-	fmt.Println(letters)
 	if !valid {
 		return nil, errors.New("invalid puzzle")
 	}
-	panic("Please implement the Solve function")
+	fmt.Println(terms)
+	fmt.Println(sum)
+	fmt.Println(letters)
+
+	//data := map[string]int{"B": 9, "I": 1, "L": 0}
+
+	// calculate all the letters
+
+	return nil, nil
 }
 
 func parse(puzzle string) ([]string, string, map[string]int, bool) {
