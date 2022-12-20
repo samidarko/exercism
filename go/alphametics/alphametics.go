@@ -22,9 +22,20 @@ type Word struct {
 	letters map[string]int
 }
 
+func NewWord(word string, letters map[string]int) (*Word, error) {
+	if letters[string(word[0])] == 0 {
+		return nil, fmt.Errorf("cannot have 0 for first letter")
+	}
+	return &Word{
+		word:    word,
+		letters: letters,
+	}, nil
+}
+
 func (w *Word) Value() int {
+
 	result := 0
-	position := len(w.letters)
+	position := len(w.word) - 1
 
 	for _, l := range w.word {
 		result += w.letters[string(l)] * pow(10, position)
@@ -43,11 +54,24 @@ func Solve(puzzle string) (map[string]int, error) {
 	fmt.Println(sum)
 	fmt.Println(letters)
 
-	//data := map[string]int{"B": 9, "I": 1, "L": 0}
+	data := map[string]int{"B": 9, "I": 1, "L": 0}
 
-	// calculate all the letters
+	total := 0
 
-	return nil, nil
+	for _, term := range terms {
+		word, _ := NewWord(term, data)
+		total += word.Value()
+	}
+
+	result := Word{word: sum, letters: data}
+
+	resultValue := result.Value()
+
+	if total == resultValue {
+		return data, nil
+	}
+
+	return nil, fmt.Errorf("no solution")
 }
 
 func parse(puzzle string) ([]string, string, map[string]int, bool) {

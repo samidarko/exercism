@@ -35,8 +35,9 @@ func BenchmarkSolve(b *testing.B) {
 }
 
 func TestWord_Value(t *testing.T) {
-	word := Word{word: "hello", letters: map[string]int{"h": 1, "e": 2, "l": 3, "o": 4}}
-	if word.Value() != 12334 {
-		t.Fatalf("%d should equal 12334", word.Value())
+	word, _ := NewWord("hello", map[string]int{"h": 1, "e": 2, "l": 3, "o": 4})
+	value := word.Value()
+	if value != 12334 {
+		t.Fatalf("%d should equal 12334", value)
 	}
 }
