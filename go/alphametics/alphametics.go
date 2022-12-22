@@ -3,6 +3,7 @@ package alphametics
 import (
 	"errors"
 	"fmt"
+	"gonum.org/v1/gonum/stat/combin"
 	"strings"
 )
 
@@ -76,25 +77,28 @@ func Solve(puzzle string) (map[string]int, error) {
 	if !valid {
 		return nil, errors.New("invalid puzzle")
 	}
-	fmt.Println(letters)
 
-	for _, permutation := range Combinations([]int{0, 1, 2, 3, 4, 5, 6, 7, 8, 9}, len(letters)) {
+	for _, permutation := range combin.Permutations(10, len(letters)) {
 		data := map[string]int{}
 
 		for i, l := range letters {
 			data[string(l)] = permutation[i]
 		}
 
-		fmt.Println(data)
-
 		total := 0
 
 		for _, term := range terms {
-			word, _ := NewWord(term, data)
+			word, err := NewWord(term, data)
+			if err != nil {
+				continue
+			}
 			total += word.Value()
 		}
 
-		result, _ := NewWord(sum, data)
+		result, err := NewWord(sum, data)
+		if err != nil {
+			continue
+		}
 
 		resultValue := result.Value()
 
