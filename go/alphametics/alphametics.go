@@ -45,33 +45,6 @@ func (w *Word) Value() int {
 	return value
 }
 
-func Combinations(L []int, r int) [][]int {
-	if r == 1 {
-		//Convert every item in L to List and
-		//Append it to List of List
-		temp := make([][]int, 0)
-		for _, rr := range L {
-			t := make([]int, 0)
-			t = append(t, rr)
-			temp = append(temp, [][]int{t}...)
-		}
-		return temp
-	} else {
-		res := make([][]int, 0)
-		for i := 0; i < len(L); i++ {
-			//Take only elements till i
-			// remember we do not care about position
-			perms := make([]int, 0)
-			perms = append(perms, L[:i]...)
-			for _, x := range Combinations(perms, r-1) {
-				t := append(x, L[i])
-				res = append(res, [][]int{t}...)
-			}
-		}
-		return res
-	}
-}
-
 func Solve(puzzle string) (map[string]int, error) {
 	terms, sum, letters, valid := parse(puzzle)
 	if !valid {
@@ -87,12 +60,26 @@ func Solve(puzzle string) (map[string]int, error) {
 
 		total := 0
 
+		words := map[string]int{}
+
 		for _, term := range terms {
-			word, err := NewWord(term, data)
-			if err != nil {
-				continue
+
+			value, ok := words[term]
+
+			//if ok {
+			//	fmt.Println("found")
+			//}
+
+			if !ok {
+				word, err := NewWord(term, data)
+				if err != nil {
+					continue
+				}
+				value = word.Value()
+				words[term] = value
 			}
-			total += word.Value()
+
+			total += value
 		}
 
 		result, err := NewWord(sum, data)
