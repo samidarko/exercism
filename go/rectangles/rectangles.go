@@ -25,59 +25,64 @@ func Count(diagram []string) int {
 	for rowIndex := 0; rowIndex < rowsCount; rowIndex++ {
 		for colIndex := 0; colIndex < colsCount; colIndex++ {
 			if diagram[rowIndex][colIndex] == '+' {
-				count += Explore(diagram, rowIndex, colIndex, Position{rowIndex: rowIndex, colIndex: colIndex}, None)
+				count += Explore(diagram, Position{rowIndex: rowIndex, colIndex: colIndex}, Position{rowIndex: rowIndex, colIndex: colIndex}, None)
 			}
 		}
 	}
 	return count
 }
 
-func Explore(grid []string, rowIndex, colIndex int, initialPosition Position, direction Direction) int {
-	rowInbounds := 0 <= rowIndex && rowIndex < len(grid)
-	colInbounds := 0 <= colIndex && colIndex < len(grid[0])
+func Explore(grid []string, currentPosition, initialPosition Position, direction Direction) int {
+	rowInbounds := 0 <= currentPosition.rowIndex && currentPosition.rowIndex < len(grid)
+	colInbounds := 0 <= currentPosition.colIndex && currentPosition.colIndex < len(grid[0])
 	if !rowInbounds || !colInbounds {
 		return 0
 	}
 
-	if direction != None && initialPosition.rowIndex == rowIndex && initialPosition.colIndex == colIndex {
+	if direction != None && initialPosition.rowIndex == currentPosition.rowIndex && initialPosition.colIndex == currentPosition.colIndex {
 		return 1
 	}
 
-	cell := grid[rowIndex][colIndex]
+	cell := grid[currentPosition.rowIndex][currentPosition.colIndex]
 
-	//count := 0
 	if cell == '+' && direction == None {
-		//count := Explore(grid, rowIndex, colIndex+1, initialPosition, Right)
-		//count += Explore(grid, rowIndex+1, colIndex, initialPosition, Down)
-		return Explore(grid, rowIndex, colIndex+1, initialPosition, Right)
-	}
-
-	if cell == '-' && direction == Right {
-		return Explore(grid, rowIndex, colIndex+1, initialPosition, Right)
+		currentPosition.colIndex++
+		return Explore(grid, currentPosition, initialPosition, Right)
 	}
 
 	if cell == '+' && direction == Right {
-		return Explore(grid, rowIndex+1, colIndex, initialPosition, Down) + Explore(grid, rowIndex, colIndex+1, initialPosition, Right)
-	}
-
-	if cell == '|' && direction == Down {
-		return Explore(grid, rowIndex+1, colIndex, initialPosition, Down)
-	}
-
-	if cell == '+' && direction == Down {
-		return Explore(grid, rowIndex, colIndex-1, initialPosition, Left) + Explore(grid, rowIndex+1, colIndex, initialPosition, Down)
-	}
-
-	if cell == '-' && direction == Left {
-		return Explore(grid, rowIndex, colIndex-1, initialPosition, Left)
+		currentPosition.rowIndex++
+		return Explore(grid, currentPosition, initialPosition, Down)
 	}
 
 	if cell == '+' && direction == Left {
-		return Explore(grid, rowIndex-1, colIndex, initialPosition, Up)
+		currentPosition.rowIndex--
+		return Explore(grid, currentPosition, initialPosition, Up)
+	}
+
+	if cell == '+' && direction == Down {
+		currentPosition.colIndex--
+		return Explore(grid, currentPosition, initialPosition, Left)
+	}
+
+	if cell == '-' && direction == Right {
+		currentPosition.colIndex++
+		return Explore(grid, currentPosition, initialPosition, Right)
+	}
+
+	if cell == '-' && direction == Left {
+		currentPosition.colIndex--
+		return Explore(grid, currentPosition, initialPosition, Left)
+	}
+
+	if cell == '|' && direction == Down {
+		currentPosition.rowIndex++
+		return Explore(grid, currentPosition, initialPosition, Down)
 	}
 
 	if cell == '|' && direction == Up {
-		return Explore(grid, rowIndex-1, colIndex, initialPosition, Up)
+		currentPosition.rowIndex--
+		return Explore(grid, currentPosition, initialPosition, Up)
 	}
 
 	return 0
