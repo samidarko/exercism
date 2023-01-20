@@ -57,7 +57,7 @@ func Explore(grid []string, rowIndex, colIndex int, initialPosition Position, di
 	}
 
 	if cell == '+' && direction == Right {
-		return Explore(grid, rowIndex+1, colIndex, initialPosition, Down)
+		return Explore(grid, rowIndex+1, colIndex, initialPosition, Down) + Explore(grid, rowIndex, colIndex+1, initialPosition, Right)
 	}
 
 	if cell == '|' && direction == Down {
@@ -65,7 +65,7 @@ func Explore(grid []string, rowIndex, colIndex int, initialPosition Position, di
 	}
 
 	if cell == '+' && direction == Down {
-		return Explore(grid, rowIndex, colIndex-1, initialPosition, Left)
+		return Explore(grid, rowIndex, colIndex-1, initialPosition, Left) + Explore(grid, rowIndex+1, colIndex, initialPosition, Down)
 	}
 
 	if cell == '-' && direction == Left {

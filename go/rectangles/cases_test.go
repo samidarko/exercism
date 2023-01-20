@@ -49,17 +49,17 @@ var testCases = []struct {
 		},
 		expected: 2,
 	},
-	//{
-	//	description: "five rectangles with shared parts",
-	//	input: []string{
-	//		"  +-+",
-	//		"  | |",
-	//		"+-+-+",
-	//		"| | |",
-	//		"+-+-+",
-	//	},
-	//	expected: 5,
-	//},
+	{
+		description: "five rectangles with shared parts",
+		input: []string{
+			"  +-+",
+			"  | |",
+			"+-+-+",
+			"| | |",
+			"+-+-+",
+		},
+		expected: 5,
+	},
 	{
 		description: "rectangle of height 1 is counted",
 		input: []string{
