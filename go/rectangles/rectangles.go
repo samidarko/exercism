@@ -64,10 +64,6 @@ func Explore(grid []string, currentPosition, initialPosition Position, direction
 
 	cell := grid[currentPosition.rowIndex][currentPosition.colIndex]
 
-	if cell == '+' && direction == None {
-		return Explore(grid, currentPosition.Right(), initialPosition, Right)
-	}
-
 	if cell == '+' && direction == Right {
 		return Explore(grid, currentPosition.Down(), initialPosition, Down) + Explore(grid, currentPosition.Right(), initialPosition, Right)
 	}
@@ -76,15 +72,15 @@ func Explore(grid []string, currentPosition, initialPosition Position, direction
 		return Explore(grid, currentPosition.Up(), initialPosition, Up) + Explore(grid, currentPosition.Left(), initialPosition, Left)
 	}
 
-	if cell == '+' && direction == Up {
-		return Explore(grid, currentPosition.Up(), initialPosition, Up)
-	}
-
 	if cell == '+' && direction == Down {
 		return Explore(grid, currentPosition.Left(), initialPosition, Left) + Explore(grid, currentPosition.Down(), initialPosition, Down)
 	}
 
-	if cell == '-' && direction == Right {
+	if direction == Up && (cell == '|' || cell == '+') {
+		return Explore(grid, currentPosition.Up(), initialPosition, Up)
+	}
+
+	if (cell == '-' && direction == Right) || (cell == '+' && direction == None) {
 		return Explore(grid, currentPosition.Right(), initialPosition, Right)
 	}
 
@@ -94,10 +90,6 @@ func Explore(grid []string, currentPosition, initialPosition Position, direction
 
 	if cell == '|' && direction == Down {
 		return Explore(grid, currentPosition.Down(), initialPosition, Down)
-	}
-
-	if cell == '|' && direction == Up {
-		return Explore(grid, currentPosition.Up(), initialPosition, Up)
 	}
 
 	return 0
