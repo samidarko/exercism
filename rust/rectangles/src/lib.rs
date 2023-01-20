@@ -29,7 +29,7 @@ impl Position {
     }
 }
 
-#[derive(Copy, Clone, PartialEq)]
+#[derive(PartialEq)]
 pub enum Direction {
     Up,
     Down,
