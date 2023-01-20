@@ -1,8 +1,27 @@
 package rectangles
 
 type Position struct {
-	colIndex int
 	rowIndex int
+	colIndex int
+}
+
+func NewPosition(rowIndex, colIndex int) Position {
+	return Position{rowIndex: rowIndex, colIndex: colIndex}
+}
+
+func (p Position) Right() Position {
+	return NewPosition(p.rowIndex, p.colIndex+1)
+}
+
+func (p Position) Left() Position {
+	return NewPosition(p.rowIndex, p.colIndex-1)
+}
+func (p Position) Up() Position {
+	return NewPosition(p.rowIndex-1, p.colIndex)
+}
+
+func (p Position) Down() Position {
+	return NewPosition(p.rowIndex+1, p.colIndex)
 }
 
 type Direction int
@@ -25,7 +44,7 @@ func Count(diagram []string) int {
 	for rowIndex := 0; rowIndex < rowsCount; rowIndex++ {
 		for colIndex := 0; colIndex < colsCount; colIndex++ {
 			if diagram[rowIndex][colIndex] == '+' {
-				count += Explore(diagram, Position{rowIndex: rowIndex, colIndex: colIndex}, Position{rowIndex: rowIndex, colIndex: colIndex}, None)
+				count += Explore(diagram, NewPosition(rowIndex, colIndex), NewPosition(rowIndex, colIndex), None)
 			}
 		}
 	}
@@ -46,43 +65,39 @@ func Explore(grid []string, currentPosition, initialPosition Position, direction
 	cell := grid[currentPosition.rowIndex][currentPosition.colIndex]
 
 	if cell == '+' && direction == None {
-		currentPosition.colIndex++
-		return Explore(grid, currentPosition, initialPosition, Right)
+		return Explore(grid, currentPosition.Right(), initialPosition, Right)
 	}
 
 	if cell == '+' && direction == Right {
-		currentPosition.rowIndex++
-		return Explore(grid, currentPosition, initialPosition, Down)
+		return Explore(grid, currentPosition.Down(), initialPosition, Down) + Explore(grid, currentPosition.Right(), initialPosition, Right)
 	}
 
 	if cell == '+' && direction == Left {
-		currentPosition.rowIndex--
-		return Explore(grid, currentPosition, initialPosition, Up)
+		return Explore(grid, currentPosition.Up(), initialPosition, Up) + Explore(grid, currentPosition.Left(), initialPosition, Left)
+	}
+
+	if cell == '+' && direction == Up {
+		return Explore(grid, currentPosition.Up(), initialPosition, Up)
 	}
 
 	if cell == '+' && direction == Down {
-		currentPosition.colIndex--
-		return Explore(grid, currentPosition, initialPosition, Left)
+		return Explore(grid, currentPosition.Left(), initialPosition, Left) + Explore(grid, currentPosition.Down(), initialPosition, Down)
 	}
 
 	if cell == '-' && direction == Right {
-		currentPosition.colIndex++
-		return Explore(grid, currentPosition, initialPosition, Right)
+		return Explore(grid, currentPosition.Right(), initialPosition, Right)
 	}
 
 	if cell == '-' && direction == Left {
-		currentPosition.colIndex--
-		return Explore(grid, currentPosition, initialPosition, Left)
+		return Explore(grid, currentPosition.Left(), initialPosition, Left)
 	}
 
 	if cell == '|' && direction == Down {
-		currentPosition.rowIndex++
-		return Explore(grid, currentPosition, initialPosition, Down)
+		return Explore(grid, currentPosition.Down(), initialPosition, Down)
 	}
 
 	if cell == '|' && direction == Up {
-		currentPosition.rowIndex--
-		return Explore(grid, currentPosition, initialPosition, Up)
+		return Explore(grid, currentPosition.Up(), initialPosition, Up)
 	}
 
 	return 0
