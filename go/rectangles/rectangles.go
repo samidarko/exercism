@@ -31,7 +31,7 @@ const (
 	Down
 	Left
 	Right
-	None
+	Idle
 )
 
 func Count(diagram []string) int {
@@ -44,7 +44,7 @@ func Count(diagram []string) int {
 	for rowIndex := 0; rowIndex < rowsCount; rowIndex++ {
 		for colIndex := 0; colIndex < colsCount; colIndex++ {
 			if diagram[rowIndex][colIndex] == '+' {
-				count += Explore(diagram, NewPosition(rowIndex, colIndex), NewPosition(rowIndex, colIndex), None)
+				count += Explore(diagram, NewPosition(rowIndex, colIndex), NewPosition(rowIndex, colIndex), Idle)
 			}
 		}
 	}
@@ -58,7 +58,7 @@ func Explore(grid []string, currentPosition, initialPosition Position, direction
 		return 0
 	}
 
-	if direction != None && initialPosition.rowIndex == currentPosition.rowIndex && initialPosition.colIndex == currentPosition.colIndex {
+	if direction != Idle && currentPosition == initialPosition {
 		return 1
 	}
 
@@ -80,7 +80,7 @@ func Explore(grid []string, currentPosition, initialPosition Position, direction
 		return Explore(grid, currentPosition.Up(), initialPosition, Up)
 	}
 
-	if (cell == '-' && direction == Right) || (cell == '+' && direction == None) {
+	if (cell == '-' && direction == Right) || (cell == '+' && direction == Idle) {
 		return Explore(grid, currentPosition.Right(), initialPosition, Right)
 	}
 
