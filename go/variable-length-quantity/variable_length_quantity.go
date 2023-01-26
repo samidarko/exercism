@@ -1,6 +1,7 @@
 package variablelengthquantity
 
 import (
+	"errors"
 	"sort"
 )
 
@@ -11,8 +12,27 @@ func EncodeVarint(input []uint32) (encoding []byte) {
 	return
 }
 
-func DecodeVarint(input []byte) ([]uint32, error) {
-	panic("Please implement the DecodeVarint function")
+func DecodeVarint(input []byte) (decoding []uint32, err error) {
+	var num uint32
+	isLast := false
+	for _, chunk := range input {
+		num <<= 7
+		isLast = chunk&128 == 0
+
+		if chunk&128 == 128 {
+			chunk -= 128
+		}
+		num += uint32(chunk)
+
+		if isLast {
+			decoding = append(decoding, num)
+			num = 0
+		}
+	}
+	if !isLast {
+		return nil, errors.New("missing last")
+	}
+	return
 }
 
 func EncodeVLQ(num uint32) (encoded []byte) {
