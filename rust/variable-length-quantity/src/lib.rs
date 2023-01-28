@@ -28,7 +28,7 @@ pub fn from_bytes(bytes: &[u8]) -> Result<Vec<u32>, Error> {
 
         let value = byte as u32;
 
-        if (32 - format!("{:b}", num).len()) < format!("{:b}", value).len() {
+        if num.leading_zeros() < 7 {
             return Err(Overflow);
         }
 
