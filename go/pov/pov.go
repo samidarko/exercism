@@ -88,32 +88,33 @@ func (tr *Tree) FromPov(from string) *Tree {
 	return node
 }
 
-//func (tr *Tree) Reverse(pov *Tree) *Tree {
-//	// should reverse until old root node is reach
-//	if tr.parent == nil {
-//		// enough?
-//		return New(tr.Value(), tr.Siblings(pov)...)
-//		//return tr
-//	}
-//	//return New(tr.Value(), New(tr.parent.Value(), tr.parent.Siblings(tr)...))
-//	return New(tr.Value(), tr.parent.Reverse(pov))
-//}
-
 // PathTo returns the shortest path between two nodes in the tree.
 func (tr *Tree) PathTo(from, to string) []string {
-	tree := tr.FromPov(from)
-	if tree == nil {
+
+	node := tr.FromPov(from)
+	if node == nil {
 		return nil
 	}
-	path := []string{from}
-	for _, child := range tree.Children() {
-		if child.Value() == to {
-			return append(path, to)
+
+	type Element struct {
+		node *Tree
+		path []string
+	}
+
+	queue := []Element{{node, []string{}}}
+
+	for len(queue) > 0 {
+		element := queue[0]
+		queue = queue[1:]
+		element.path = append(element.path, element.node.Value())
+		if element.node.Value() == to {
+			return element.path
 		}
-		if remainingPath := child.PathTo(child.Value(), to); remainingPath != nil {
-			return append(path, remainingPath...)
+		for _, child := range element.node.Children() {
+			queue = append(queue, Element{child, element.path})
 		}
 	}
+
 	return nil
 }
 
@@ -129,29 +130,3 @@ func (tr *Tree) FindNode(value string) *Tree {
 	}
 	return nil
 }
-
-//func ShortestPath(edges [][]string, startNode, endNode string) int {
-//	graph, _ := BuildGraph(edges)
-//	visited := map[string]bool{startNode: true}
-//	type Element struct {
-//		node     string
-//		distance int
-//	}
-//	queue := []Element{{startNode, 0}}
-//
-//	for len(queue) > 0 {
-//		element := queue[0]
-//		queue = queue[1:]
-//		if element.node == endNode {
-//			return element.distance
-//		}
-//
-//		for _, neighbor := range graph[element.node] {
-//			if !visited[neighbor] {
-//				visited[neighbor] = true
-//				queue = append(queue, Element{neighbor, element.distance + 1})
-//			}
-//		}
-//	}
-//	return -1
-//}

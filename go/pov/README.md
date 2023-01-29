@@ -1,6 +1,6 @@
-# Pov
+# POV
 
-Welcome to Pov on Exercism's Go Track.
+Welcome to POV on Exercism's Go Track.
 If you need help running the tests or submitting your code, check out `HELP.md`.
 
 ## Instructions

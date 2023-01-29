@@ -245,49 +245,6 @@ func TestPathTo(t *testing.T) {
 	}
 }
 
-func TestFindNode(t *testing.T) {
-	tests := []struct {
-		description string
-		tree        *Tree
-		from        string
-		expected    *Tree
-	}{
-		{
-			description: "Results in the same tree if the input tree is a singleton",
-			tree:        New("x"),
-			from:        "x",
-			expected:    New("x"),
-		},
-		{
-			description: "Can reroot a tree with a parent and one sibling",
-			tree:        New("parent", New("x"), New("sibling")),
-			from:        "x",
-			expected:    New("x"),
-		},
-		{
-			description: "Can reroot a tree with new root deeply nested in tree",
-			tree:        New("level-0", New("level-1", New("level-2", New("level-3", New("x"))))),
-			from:        "x",
-			expected:    New("x"),
-		},
-		{
-			description: "Errors if target does not exist in a singleton tree",
-			tree:        New("x"),
-			from:        "nonexistent",
-			expected:    nil,
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.description, func(t *testing.T) {
-			got := tt.tree.FindNode(tt.from)
-			want := tt.expected
-			if !treeEqual(want, got) {
-				t.Fatalf("expected: %v, got: %v", want, got)
-			}
-		})
-	}
-}
-
 var benchmarkResultPov *Tree
 
 func BenchmarkFromPov(b *testing.B) {
