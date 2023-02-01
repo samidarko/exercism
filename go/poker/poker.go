@@ -2,8 +2,23 @@ package poker
 
 import (
 	"fmt"
+	"sort"
 	"strconv"
 	"strings"
+)
+
+type Category int
+
+const (
+	StraightFlush Category = iota
+	FourOfKind    Category = iota
+	FullHouse     Category = iota
+	Flush         Category = iota
+	Straight      Category = iota
+	ThreeOfKind   Category = iota
+	TwoPair       Category = iota
+	OnePair       Category = iota
+	HighCard      Category = iota
 )
 
 type Card struct {
@@ -53,10 +68,54 @@ func NewCard(input string) (Card, error) {
 
 type Hand []Card
 
-func BestHand(hands []string) ([]string, error) {
+func (h Hand) IsValid() bool {
+	return len(h) != 5
+}
 
-	for _, h := range hands {
-		hand := make([]Card, 0)
+func (h Hand) Rank() Category {
+	sort.Slice(h, func(a, b int) bool { return h[a].rank < h[b].rank })
+
+	suitGroup := map[rune][]int{}
+	for _, card := range h {
+		suitGroup[card.suit] = append(suitGroup[card.suit], card.rank)
+	}
+
+	unitGroup := map[int][]rune{}
+	for _, card := range h {
+		unitGroup[card.rank] = append(unitGroup[card.rank], card.suit)
+	}
+
+	if h[0].rank+4 == h[4].rank {
+		if len(suitGroup) == 1 {
+			return StraightFlush
+		}
+		return Straight
+	}
+
+	// Four of a kind : carre
+	// Full house : brelan + pair
+	// Straight: suite peu importe la couleur
+	// Three of a kind : brelan
+	// Two pair
+	// One pair
+	// High card
+
+	return HighCard
+}
+
+func (h Hand) Value() (value int) {
+	for _, card := range h {
+		value += card.rank
+	}
+	return
+}
+
+func BestHand(input []string) ([]string, error) {
+
+	hands := make([]Hand, 0)
+
+	for _, h := range input {
+		hand := make(Hand, 0)
 
 		for _, c := range strings.Split(h, " ") {
 			card, err := NewCard(c)
@@ -67,9 +126,11 @@ func BestHand(hands []string) ([]string, error) {
 			hand = append(hand, card)
 		}
 
-		if len(hand) != 5 {
+		if hand.IsValid() {
 			return nil, fmt.Errorf("wrong card number %d", len(hand))
 		}
+
+		hands = append(hands, hand)
 	}
 
 	return nil, nil
