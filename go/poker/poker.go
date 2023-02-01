@@ -10,15 +10,15 @@ import (
 type Category int
 
 const (
-	StraightFlush Category = iota
-	FourOfKind    Category = iota
-	FullHouse     Category = iota
-	Flush         Category = iota
-	Straight      Category = iota
-	ThreeOfKind   Category = iota
-	TwoPair       Category = iota
-	OnePair       Category = iota
 	HighCard      Category = iota
+	OnePair       Category = iota
+	TwoPair       Category = iota
+	ThreeOfKind   Category = iota
+	Straight      Category = iota
+	Flush         Category = iota
+	FullHouse     Category = iota
+	FourOfKind    Category = iota
+	StraightFlush Category = iota
 )
 
 type Card struct {
@@ -66,45 +66,94 @@ func NewCard(input string) (Card, error) {
 
 }
 
-type Hand []Card
+type Hand struct {
+	cards    []Card
+	input    string
+	category Category
+}
 
-func (h Hand) IsValid() bool {
-	return len(h) != 5
+func NewHand(input string) (Hand, error) {
+	hand := Hand{
+		input: input,
+		cards: make([]Card, 0),
+	}
+
+	for _, c := range strings.Split(input, " ") {
+		card, err := NewCard(c)
+		if err != nil {
+			return Hand{}, err
+		}
+
+		hand.cards = append(hand.cards, card)
+	}
+
+	if len(hand.cards) != 5 {
+		return Hand{}, fmt.Errorf("wrong card number %d", len(hand.cards))
+	}
+
+	hand.category = hand.Rank()
+
+	return hand, nil
 }
 
 func (h Hand) Rank() Category {
-	sort.Slice(h, func(a, b int) bool { return h[a].rank < h[b].rank })
+	sort.Slice(h.cards, func(a, b int) bool { return h.cards[a].rank < h.cards[b].rank })
 
 	suitGroup := map[rune][]int{}
-	for _, card := range h {
+	for _, card := range h.cards {
 		suitGroup[card.suit] = append(suitGroup[card.suit], card.rank)
 	}
 
-	unitGroup := map[int][]rune{}
-	for _, card := range h {
-		unitGroup[card.rank] = append(unitGroup[card.rank], card.suit)
+	if len(suitGroup) == 1 {
+		return Flush
 	}
 
-	if h[0].rank+4 == h[4].rank {
+	if h.cards[0].rank+4 == h.cards[4].rank {
 		if len(suitGroup) == 1 {
 			return StraightFlush
 		}
 		return Straight
 	}
 
-	// Four of a kind : carre
-	// Full house : brelan + pair
-	// Straight: suite peu importe la couleur
-	// Three of a kind : brelan
-	// Two pair
-	// One pair
-	// High card
+	unitGroup := map[int][]rune{}
+	for _, card := range h.cards {
+		unitGroup[card.rank] = append(unitGroup[card.rank], card.suit)
+	}
 
-	return HighCard
+	pairs := 0
+	threeOfKind := false
+
+	for _, suits := range unitGroup {
+		if len(suits) == 4 {
+			return FourOfKind
+		}
+		if len(suits) == 3 {
+			threeOfKind = true
+		}
+		if len(suits) == 2 {
+			pairs++
+		}
+	}
+
+	if threeOfKind {
+		if pairs == 1 {
+			return FullHouse
+		}
+		return ThreeOfKind
+	}
+
+	switch pairs {
+	case 2:
+		return TwoPair
+	case 1:
+		return OnePair
+	default:
+		return HighCard
+	}
 }
 
 func (h Hand) Value() (value int) {
-	for _, card := range h {
+	for _, card := range h.cards {
 		value += card.rank
 	}
 	return
@@ -115,23 +164,32 @@ func BestHand(input []string) ([]string, error) {
 	hands := make([]Hand, 0)
 
 	for _, h := range input {
-		hand := make(Hand, 0)
 
-		for _, c := range strings.Split(h, " ") {
-			card, err := NewCard(c)
-			if err != nil {
-				return nil, err
-			}
-
-			hand = append(hand, card)
-		}
-
-		if hand.IsValid() {
-			return nil, fmt.Errorf("wrong card number %d", len(hand))
+		hand, err := NewHand(h)
+		if err != nil {
+			return nil, err
 		}
 
 		hands = append(hands, hand)
 	}
 
-	return nil, nil
+	sort.Slice(hands, func(a, b int) bool {
+		aRank, bRank := hands[a].Rank(), hands[b].Rank()
+		if aRank == bRank {
+			return hands[a].Value() > hands[b].Value()
+		}
+		return aRank > bRank
+	})
+
+	highestCategory := hands[0].category
+
+	result := make([]string, 0)
+
+	for _, hand := range hands {
+		if hand.category == highestCategory {
+			result = append(result, hand.input)
+		}
+	}
+
+	return result, nil
 }
