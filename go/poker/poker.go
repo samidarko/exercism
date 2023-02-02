@@ -26,6 +26,23 @@ type Card struct {
 	suit rune
 }
 
+type Cards []Card
+
+func (cards Cards) isStraight() bool {
+	sort.Slice(cards, func(a, b int) bool { return cards[a].rank < cards[b].rank })
+
+	expectedRank := cards[0].rank + 1
+
+	for i := 1; i < len(cards); i++ {
+		if cards[i].rank != expectedRank {
+			return false
+		}
+		expectedRank++
+	}
+
+	return true
+}
+
 func NewCard(input string) (Card, error) {
 	card := []rune(input)
 	if len(card) < 2 {
@@ -96,23 +113,22 @@ func NewHand(input string) (Hand, error) {
 	return hand, nil
 }
 
-func getCategory(cards []Card) Category {
-	sort.Slice(cards, func(a, b int) bool { return cards[a].rank < cards[b].rank })
+func getCategory(cards Cards) Category {
 
 	suitGroup := map[rune][]int{}
 	for _, card := range cards {
 		suitGroup[card.suit] = append(suitGroup[card.suit], card.rank)
 	}
 
-	if len(suitGroup) == 1 {
-		return Flush
-	}
-
-	if cards[0].rank+4 == cards[4].rank {
+	if cards.isStraight() {
 		if len(suitGroup) == 1 {
 			return StraightFlush
 		}
 		return Straight
+	}
+
+	if len(suitGroup) == 1 {
+		return Flush
 	}
 
 	unitGroup := map[int][]rune{}
