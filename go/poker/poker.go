@@ -91,16 +91,16 @@ func NewHand(input string) (Hand, error) {
 		return Hand{}, fmt.Errorf("wrong card number %d", len(hand.cards))
 	}
 
-	hand.category = hand.Rank()
+	hand.category = getCategory(hand.cards)
 
 	return hand, nil
 }
 
-func (h Hand) Rank() Category {
-	sort.Slice(h.cards, func(a, b int) bool { return h.cards[a].rank < h.cards[b].rank })
+func getCategory(cards []Card) Category {
+	sort.Slice(cards, func(a, b int) bool { return cards[a].rank < cards[b].rank })
 
 	suitGroup := map[rune][]int{}
-	for _, card := range h.cards {
+	for _, card := range cards {
 		suitGroup[card.suit] = append(suitGroup[card.suit], card.rank)
 	}
 
@@ -108,7 +108,7 @@ func (h Hand) Rank() Category {
 		return Flush
 	}
 
-	if h.cards[0].rank+4 == h.cards[4].rank {
+	if cards[0].rank+4 == cards[4].rank {
 		if len(suitGroup) == 1 {
 			return StraightFlush
 		}
@@ -116,7 +116,7 @@ func (h Hand) Rank() Category {
 	}
 
 	unitGroup := map[int][]rune{}
-	for _, card := range h.cards {
+	for _, card := range cards {
 		unitGroup[card.rank] = append(unitGroup[card.rank], card.suit)
 	}
 
@@ -154,7 +154,14 @@ func (h Hand) Rank() Category {
 
 func (h Hand) Value() (value int) {
 	for _, card := range h.cards {
-		value += card.rank
+		switch h.category {
+		case HighCard:
+			if card.rank > value {
+				value = card.rank
+			}
+		default:
+			value += card.rank
+		}
 	}
 	return
 }
@@ -174,19 +181,19 @@ func BestHand(input []string) ([]string, error) {
 	}
 
 	sort.Slice(hands, func(a, b int) bool {
-		aRank, bRank := hands[a].Rank(), hands[b].Rank()
-		if aRank == bRank {
+		aCategory, bCategory := hands[a].category, hands[b].category
+		if aCategory == bCategory {
 			return hands[a].Value() > hands[b].Value()
 		}
-		return aRank > bRank
+		return aCategory > bCategory
 	})
 
-	highestCategory := hands[0].category
+	highestCard := hands[0]
 
 	result := make([]string, 0)
 
 	for _, hand := range hands {
-		if hand.category == highestCategory {
+		if hand.category == highestCard.category && hand.Value() == highestCard.Value() {
 			result = append(result, hand.input)
 		}
 	}
