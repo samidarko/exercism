@@ -76,6 +76,21 @@ type Hand struct {
 	kickers  []int
 }
 
+func (h Hand) Equal(other Hand) bool {
+
+	if !(h.category == other.category && h.score == other.score) {
+		return false
+	}
+
+	for i := range h.kickers {
+		if h.kickers[i] != other.kickers[i] {
+			return false
+		}
+	}
+
+	return true
+}
+
 func NewHand(input string) (Hand, error) {
 	hand := Hand{
 		input: input,
@@ -199,6 +214,14 @@ func BestHand(input []string) ([]string, error) {
 	sort.Slice(hands, func(a, b int) bool {
 		aCategory, bCategory := hands[a].category, hands[b].category
 		if aCategory == bCategory {
+			if hands[a].score == hands[b].score {
+				for i := range hands[a].kickers {
+					if hands[a].kickers[i] == hands[b].kickers[i] {
+						continue
+					}
+					return hands[a].kickers[i] > hands[b].kickers[i]
+				}
+			}
 			return hands[a].score > hands[b].score
 		}
 		return aCategory > bCategory
@@ -209,7 +232,7 @@ func BestHand(input []string) ([]string, error) {
 	result := make([]string, 0)
 
 	for _, hand := range hands {
-		if hand.category == highestCard.category && hand.score == highestCard.score {
+		if highestCard.Equal(hand) {
 			result = append(result, hand.input)
 		}
 	}
