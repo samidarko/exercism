@@ -153,7 +153,7 @@ func getCategory(cards Cards) (Category, [][]int) {
 	combinations := [][]int{{firstCard.rank}}
 
 	for i := 1; i < len(cards); i++ {
-		if isStraight && cards[i-1].rank != cards[i].rank {
+		if isStraight && cards[i-1].rank+1 != cards[i].rank {
 			isStraight = false
 		}
 		if isSameSuit && cards[i-1].suit != cards[i].suit {
