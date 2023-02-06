@@ -68,27 +68,53 @@ func NewCard(input string) (Card, error) {
 
 }
 
-type Hand struct {
-	cards    []Card
-	input    string
-	category Category
-	score    int
-	kickers  []int
+func sum(elements []int) (result int) {
+	for _, element := range elements {
+		result += element
+	}
+	return
 }
 
-func (h Hand) Equal(other Hand) bool {
-
-	if !(h.category == other.category && h.score == other.score) {
-		return false
-	}
-
-	for i := range h.kickers {
-		if h.kickers[i] != other.kickers[i] {
-			return false
+func areLess(a, b [][]int) bool {
+	for i := 1; i < len(a); i++ {
+		if a[i][0] != b[i][0] {
+			return a[1][0] < b[1][0]
 		}
 	}
+	return false
+}
 
-	return true
+type Hand struct {
+	cards        []Card
+	input        string
+	category     Category
+	combinations [][]int
+}
+
+func (h Hand) Less(other Hand) bool {
+
+	if h.category == other.category {
+		switch h.category {
+		case Straight, StraightFlush, Flush:
+			return sum(h.combinations[0]) < sum(other.combinations[0])
+		case FourOfKind, FullHouse, TwoPair:
+			hScore, otherScore := sum(h.combinations[0]), sum(other.combinations[0])
+			if hScore == otherScore {
+				return h.combinations[1][0] < other.combinations[1][0]
+			}
+			return hScore < otherScore
+		case ThreeOfKind, OnePair:
+			hScore, otherScore := sum(h.combinations[0]), sum(other.combinations[0])
+			if hScore == otherScore {
+				return areLess(h.combinations[1:], other.combinations[1:])
+			}
+			return hScore < otherScore
+
+		case HighCard:
+			return areLess(h.combinations, other.combinations)
+		}
+	}
+	return h.category < other.category
 }
 
 func NewHand(input string) (Hand, error) {
@@ -110,91 +136,84 @@ func NewHand(input string) (Hand, error) {
 		return Hand{}, fmt.Errorf("wrong card number %d", len(hand.cards))
 	}
 
-	category, score, kickers := getCategory(hand.cards)
+	category, combinations := getCategory(hand.cards)
 	hand.category = category
-	hand.score = score
-	hand.kickers = kickers
+	hand.combinations = combinations
 
 	return hand, nil
 }
 
-func getCategory(cards Cards) (Category, int, []int) {
+func getCategory(cards Cards) (Category, [][]int) {
 
 	sort.Slice(cards, func(a, b int) bool { return cards[a].rank < cards[b].rank })
 
 	firstCard := cards[0]
-	totalValue := firstCard.rank
 	isStraight := true
 	isSameSuit := true
-	streaks := [][]int{{firstCard.rank}}
+	combinations := [][]int{{firstCard.rank}}
 
 	for i := 1; i < len(cards); i++ {
-		totalValue += cards[i].rank
 		if isStraight && cards[i-1].rank != cards[i].rank {
 			isStraight = false
 		}
 		if isSameSuit && cards[i-1].suit != cards[i].suit {
 			isSameSuit = false
 		}
-		if streaks[len(streaks)-1][0] == cards[i].rank {
-			streaks[len(streaks)-1] = append(streaks[len(streaks)-1], cards[i].rank)
+		if combinations[len(combinations)-1][0] == cards[i].rank {
+			combinations[len(combinations)-1] = append(combinations[len(combinations)-1], cards[i].rank)
 		} else {
-			streaks = append(streaks, []int{cards[i].rank})
+			combinations = append(combinations, []int{cards[i].rank})
 		}
 	}
+
+	sort.Slice(combinations, func(a, b int) bool {
+		if len(combinations[a]) == len(combinations[b]) {
+			return combinations[a][0] > combinations[b][0]
+		}
+		return len(combinations[a]) > len(combinations[b])
+	})
 
 	if isStraight {
 		if isSameSuit {
-			return StraightFlush, totalValue, []int{}
+			return StraightFlush, combinations
 		}
-		return Straight, totalValue, []int{}
+		return Straight, combinations
 	}
 
 	if isSameSuit {
-		return Flush, totalValue, []int{}
+		return Flush, combinations
 	}
 
 	pairs := 0
-	score := 0
 	category := HighCard
-	kickers := make([]int, 0)
 
-	for _, streak := range streaks {
+	for _, streak := range combinations {
 		switch len(streak) {
 		case 4:
 			category = FourOfKind
-			score += 4 * streak[0]
 		case 3:
 			category = ThreeOfKind
-			score += 3 * streak[0]
 		case 2:
 			pairs++
-			score += 2 * streak[0]
-		default:
-			kickers = append(kickers, streak[0])
 		}
 	}
 
-	sort.Slice(kickers, func(a, b int) bool { return kickers[a] > kickers[b] })
-
 	switch category {
 	case FourOfKind:
-		return category, score, kickers
+		return category, combinations
 	case ThreeOfKind:
 		if pairs == 1 {
-			return FullHouse, totalValue, kickers
+			return FullHouse, combinations
 		}
-		return ThreeOfKind, totalValue, kickers
+		return ThreeOfKind, combinations
 	default:
 		if pairs == 2 {
-			return TwoPair, score, kickers
+			return TwoPair, combinations
 		} else if pairs == 1 {
-
-			return OnePair, score, kickers
+			return OnePair, combinations
 		} else {
-			return HighCard, 0, kickers
+			return HighCard, combinations
 		}
-
 	}
 }
 
@@ -212,19 +231,7 @@ func BestHand(input []string) ([]string, error) {
 	}
 
 	sort.Slice(hands, func(a, b int) bool {
-		aCategory, bCategory := hands[a].category, hands[b].category
-		if aCategory == bCategory {
-			if hands[a].score == hands[b].score {
-				for i := range hands[a].kickers {
-					if hands[a].kickers[i] == hands[b].kickers[i] {
-						continue
-					}
-					return hands[a].kickers[i] > hands[b].kickers[i]
-				}
-			}
-			return hands[a].score > hands[b].score
-		}
-		return aCategory > bCategory
+		return !hands[a].Less(hands[b])
 	})
 
 	highestCard := hands[0]
@@ -232,9 +239,10 @@ func BestHand(input []string) ([]string, error) {
 	result := make([]string, 0)
 
 	for _, hand := range hands {
-		if highestCard.Equal(hand) {
-			result = append(result, hand.input)
+		if hand.Less(highestCard) {
+			break
 		}
+		result = append(result, hand.input)
 	}
 
 	return result, nil
