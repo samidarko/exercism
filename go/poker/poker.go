@@ -56,7 +56,7 @@ func NewCard(input string) (Card, error) {
 	case name == "A":
 		return Card{rank: 1, suit: suit}, nil
 	default:
-		rank, err := strconv.Atoi(name) // name is now an int
+		rank, err := strconv.Atoi(name)
 		if err != nil {
 			return Card{}, fmt.Errorf("invalid name %d", rank)
 		}
@@ -68,17 +68,25 @@ func NewCard(input string) (Card, error) {
 
 }
 
+func checkAce(rank int) int {
+	if rank == 1 {
+		return 10
+	}
+	return rank
+}
+
 func sum(elements []int) (result int) {
 	for _, element := range elements {
-		result += element
+		result += checkAce(element)
 	}
 	return
 }
 
 func areLess(a, b [][]int) bool {
-	for i := 1; i < len(a); i++ {
-		if a[i][0] != b[i][0] {
-			return a[1][0] < b[1][0]
+	for i := 0; i < len(a); i++ {
+		c, d := checkAce(a[i][0]), checkAce(b[i][0])
+		if c != d {
+			return c < d
 		}
 	}
 	return false
@@ -97,12 +105,19 @@ func (h Hand) Less(other Hand) bool {
 		switch h.category {
 		case Straight, StraightFlush, Flush:
 			return sum(h.combinations[0]) < sum(other.combinations[0])
-		case FourOfKind, FullHouse, TwoPair:
+		case FourOfKind, FullHouse:
 			hScore, otherScore := sum(h.combinations[0]), sum(other.combinations[0])
 			if hScore == otherScore {
 				return h.combinations[1][0] < other.combinations[1][0]
 			}
 			return hScore < otherScore
+		case TwoPair:
+			for i := 0; i < 3; i++ {
+				if h.combinations[i][0] != other.combinations[i][0] {
+					return h.combinations[i][0] < other.combinations[i][0]
+				}
+			}
+			return false
 		case ThreeOfKind, OnePair:
 			hScore, otherScore := sum(h.combinations[0]), sum(other.combinations[0])
 			if hScore == otherScore {
@@ -147,17 +162,20 @@ func getCategory(cards Cards) (Category, [][]int) {
 
 	sort.Slice(cards, func(a, b int) bool { return cards[a].rank < cards[b].rank })
 
-	firstCard := cards[0]
 	isStraight := true
 	isSameSuit := true
-	combinations := [][]int{{firstCard.rank}}
+	combinations := [][]int{{cards[0].rank}}
 
 	for i := 1; i < len(cards); i++ {
-		if isStraight && cards[i-1].rank+1 != cards[i].rank {
-			isStraight = false
-		}
 		if isSameSuit && cards[i-1].suit != cards[i].suit {
 			isSameSuit = false
+		}
+		if i == 1 && cards[0].rank == 1 && cards[4].rank == 13 { // 13 == King
+			combinations = append(combinations, []int{cards[i].rank})
+			continue
+		}
+		if isStraight && cards[i-1].rank+1 != cards[i].rank {
+			isStraight = false
 		}
 		if combinations[len(combinations)-1][0] == cards[i].rank {
 			combinations[len(combinations)-1] = append(combinations[len(combinations)-1], cards[i].rank)
@@ -235,6 +253,7 @@ func BestHand(input []string) ([]string, error) {
 	})
 
 	highestCard := hands[0]
+	winners := map[string]bool{}
 
 	result := make([]string, 0)
 
@@ -242,7 +261,13 @@ func BestHand(input []string) ([]string, error) {
 		if hand.Less(highestCard) {
 			break
 		}
-		result = append(result, hand.input)
+		winners[hand.input] = true
+	}
+
+	for _, hand := range input {
+		if ok := winners[hand]; ok {
+			result = append(result, hand)
+		}
 	}
 
 	return result, nil
