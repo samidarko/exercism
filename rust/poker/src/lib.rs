@@ -30,7 +30,7 @@ pub fn get_rank(rank: &str) -> u32 {
     }
 }
 
-#[derive(PartialEq, Copy, Clone)]
+#[derive(PartialEq, PartialOrd, Copy, Clone)]
 pub enum Category {
     HighCard = 0,
     OnePair = 1,
@@ -139,7 +139,7 @@ pub fn get_category_and_ranks(cards: &[Card]) -> (Category, Vec<u32>) {
 }
 
 pub struct Hand<'a> {
-    cards: Vec<Card>,
+    // cards: Vec<Card>,
     input: &'a str,
     category: Category,
     ranks: Vec<u32>,
@@ -150,11 +150,32 @@ impl<'a> Hand<'a> {
         let cards: Vec<Card> = input.split(" ").map(|s| Card::new(s)).collect();
         let (category, ranks) = get_category_and_ranks(&cards);
         Self {
-            cards,
+            // cards,
             input,
             category,
             ranks,
         }
+    }
+}
+
+impl<'a> PartialEq<Self> for Hand<'a> {
+    fn eq(&self, other: &Self) -> bool {
+        self.category == other.category && self.ranks.iter().zip(other.ranks.iter()).all(|(a, b)| a == b)
+    }
+}
+
+impl<'a> PartialOrd for Hand<'a> {
+    fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
+        if self.category == other.category {
+            for i in 0..self.ranks.len() {
+                if &self.ranks[i] != &other.ranks[i] {
+                    return self.ranks[i].partial_cmp(&other.ranks[i])
+                }
+            }
+            return Some(Ordering::Equal)
+        }
+
+        self.category.partial_cmp(&other.category)
     }
 }
 
@@ -163,5 +184,22 @@ pub fn winning_hands<'a>(hands: &[&'a str]) -> Vec<&'a str> {
         .iter()
         .map(|hand| Hand::new(hand))
         .collect::<Vec<Hand>>();
-    all_hands.iter().map(|h| h.input).collect()
+
+    let mut result: Vec<&'a str> = vec![all_hands[0].input];
+
+    let mut best_hand = &all_hands[0];
+
+    for hand in &all_hands[1..] {
+        if best_hand == hand {
+            result.push(hand.input);
+        }
+
+        if best_hand < hand {
+            result = vec![hand.input];
+            best_hand = &hand;
+        }
+
+    }
+
+    result
 }
