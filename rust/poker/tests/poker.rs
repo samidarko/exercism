@@ -1,5 +1,6 @@
-use poker::winning_hands;
+use poker::{Card, is_flush, is_straight, winning_hands};
 use std::collections::HashSet;
+use poker::Suit::Spade;
 
 fn hs_from<'a>(input: &[&'a str]) -> HashSet<&'a str> {
     let mut hs = HashSet::new();
@@ -16,6 +17,19 @@ fn hs_from<'a>(input: &[&'a str]) -> HashSet<&'a str> {
 /// abstract away the order of outputs.
 fn test(input: &[&str], expected: &[&str]) {
     assert_eq!(hs_from(&winning_hands(input)), hs_from(expected))
+}
+
+
+#[test]
+fn test_is_flush() {
+    let input = &[Card::new("4S"), Card::new("5S")];
+    assert!(is_flush(input))
+}
+
+#[test]
+fn test_is_straight() {
+    let input = &[Card::new("5S"), Card::new("4D")];
+    assert!(is_straight(input))
 }
 
 #[test]
