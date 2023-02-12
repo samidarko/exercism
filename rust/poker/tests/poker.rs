@@ -1,4 +1,4 @@
-use poker::{Card, is_flush, is_straight, winning_hands};
+use poker::{is_flush, is_straight, winning_hands, Card};
 use std::collections::HashSet;
 
 fn hs_from<'a>(input: &[&'a str]) -> HashSet<&'a str> {
@@ -17,7 +17,6 @@ fn hs_from<'a>(input: &[&'a str]) -> HashSet<&'a str> {
 fn test(input: &[&str], expected: &[&str]) {
     assert_eq!(hs_from(&winning_hands(input)), hs_from(expected))
 }
-
 
 #[test]
 fn test_is_flush() {

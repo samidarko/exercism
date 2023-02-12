@@ -1,7 +1,9 @@
-use std::collections::HashMap;
-use std::cmp::Ordering;
-use crate::Category::{Flush, FourOfKind, FullHouse, HighCard, OnePair, Straight, StraightFlush, ThreeOfKind, TwoPair};
+use crate::Category::{
+    Flush, FourOfKind, FullHouse, HighCard, OnePair, Straight, StraightFlush, ThreeOfKind, TwoPair,
+};
 use crate::Suit::{Club, Diamond, Heart, Spade};
+use std::cmp::Ordering;
+use std::collections::HashMap;
 
 /// Given a list of poker hands, return a list of those hands which win.
 ///
@@ -82,7 +84,7 @@ pub fn is_straight(cards: &[Card]) -> bool {
     for i in 1..ranks.len() {
         if ranks[i - 1] == 5 && ranks[i] == 14 {
             // aces can start a straight (A 2 3 4 5)
-            continue
+            continue;
         }
         if ranks[i - 1] + 1 != ranks[i] {
             return false;
@@ -111,7 +113,10 @@ pub fn get_category_and_ranks(cards: &[Card]) -> (Category, Vec<u32>) {
 
     let mut rank_count: HashMap<u32, u32> = HashMap::new();
     ranks.into_iter().for_each(|rank| {
-        rank_count.entry(rank).and_modify(|rank| *rank += 1).or_insert(1);
+        rank_count
+            .entry(rank)
+            .and_modify(|rank| *rank += 1)
+            .or_insert(1);
     });
 
     let mut rank_groups = rank_count.into_iter().collect::<Vec<_>>();
@@ -125,24 +130,17 @@ pub fn get_category_and_ranks(cards: &[Card]) -> (Category, Vec<u32>) {
     ranks = vec![];
 
     for (rank, count) in rank_groups {
-        if count == 4 {
-            category = FourOfKind
+        match count {
+            4 => category = FourOfKind,
+            3 => category = ThreeOfKind,
+            2 if category == ThreeOfKind => category = FullHouse,
+            2 if category == OnePair => category = TwoPair,
+            2 if category == HighCard => category = OnePair,
+            _ => {}
         }
-        if count == 3 {
-            category = ThreeOfKind
-        }
-        if count == 2 && category == ThreeOfKind {
-            category = FullHouse
-        }
-        if count == 2 && category == OnePair {
-            category = TwoPair
-        }
-        if count == 2 && category == HighCard {
-            category = OnePair
-        }
+
         ranks.push(rank);
     }
-
 
     (category, ranks)
 }
@@ -167,7 +165,12 @@ impl<'a> Hand<'a> {
 
 impl<'a> PartialEq<Self> for Hand<'a> {
     fn eq(&self, other: &Self) -> bool {
-        self.category == other.category && self.ranks.iter().zip(other.ranks.iter()).all(|(a, b)| a == b)
+        self.category == other.category
+            && self
+                .ranks
+                .iter()
+                .zip(other.ranks.iter())
+                .all(|(a, b)| a == b)
     }
 }
 
@@ -176,10 +179,10 @@ impl<'a> PartialOrd for Hand<'a> {
         if self.category == other.category {
             for i in 0..self.ranks.len() {
                 if &self.ranks[i] != &other.ranks[i] {
-                    return self.ranks[i].partial_cmp(&other.ranks[i])
+                    return self.ranks[i].partial_cmp(&other.ranks[i]);
                 }
             }
-            return Some(Ordering::Equal)
+            return Some(Ordering::Equal);
         }
 
         self.category.partial_cmp(&other.category)
@@ -192,9 +195,8 @@ pub fn winning_hands<'a>(hands: &[&'a str]) -> Vec<&'a str> {
         .map(|hand| Hand::new(hand))
         .collect::<Vec<Hand>>();
 
-    let mut result: Vec<&'a str> = vec![all_hands[0].input];
-
     let mut best_hand = &all_hands[0];
+    let mut result: Vec<&'a str> = vec![best_hand.input];
 
     for hand in &all_hands[1..] {
         if best_hand == hand {
@@ -205,7 +207,6 @@ pub fn winning_hands<'a>(hands: &[&'a str]) -> Vec<&'a str> {
             result = vec![hand.input];
             best_hand = &hand;
         }
-
     }
 
     result
