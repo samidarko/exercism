@@ -81,7 +81,6 @@ fn test_highest_pair_wins() {
 }
 
 #[test]
-#[ignore]
 fn test_two_pairs_beats_one_pair() {
     test(&["2S 8H 6S 8D JH", "4S 5H 4C 8C 5C"], &["4S 5H 4C 8C 5C"])
 }
@@ -141,7 +140,6 @@ fn test_aces_can_end_a_straight_high() {
 }
 
 #[test]
-#[ignore]
 fn test_aces_can_start_a_straight_low() {
     // aces can start a straight (A 2 3 4 5)
     test(&["4S 5H 4C 8D 4H", "4D AH 3S 2D 5C"], &["4D AH 3S 2D 5C"])
@@ -222,7 +220,6 @@ fn test_aces_can_end_a_straight_flush_high() {
 }
 
 #[test]
-#[ignore]
 fn test_aces_can_start_a_straight_flush_low() {
     // aces can start a straight flush (A 2 3 4 5)
     test(&["KS AH AS AD AC", "4H AH 3H 2H 5H"], &["4H AH 3H 2H 5H"])

@@ -80,6 +80,10 @@ pub fn is_straight(cards: &[Card]) -> bool {
     let mut ranks = cards.iter().map(|card| card.rank).collect::<Vec<u32>>();
     ranks.sort_unstable();
     for i in 1..ranks.len() {
+        if ranks[i - 1] == 5 && ranks[i] == 14 {
+            // aces can start a straight (A 2 3 4 5)
+            continue
+        }
         if ranks[i - 1] + 1 != ranks[i] {
             return false;
         }
@@ -94,6 +98,11 @@ pub fn get_category_and_ranks(cards: &[Card]) -> (Category, Vec<u32>) {
 
     if is_straight(cards) {
         ranks.sort_unstable_by(|a, b| b.cmp(a));
+        if ranks[0] == 14 && ranks[1] < 13 {
+            // even though an ace is usually high, a 5-high straight flush is the lowest-scoring straight flush
+            ranks.remove(0);
+            ranks.push(1);
+        }
         if category == Flush {
             return (StraightFlush, ranks);
         }
@@ -122,14 +131,14 @@ pub fn get_category_and_ranks(cards: &[Card]) -> (Category, Vec<u32>) {
         if count == 3 {
             category = ThreeOfKind
         }
-        if count == 2 && category == HighCard {
-            category = OnePair
+        if count == 2 && category == ThreeOfKind {
+            category = FullHouse
         }
         if count == 2 && category == OnePair {
             category = TwoPair
         }
-        if count == 2 && category == ThreeOfKind {
-            category = FullHouse
+        if count == 2 && category == HighCard {
+            category = OnePair
         }
         ranks.push(rank);
     }
@@ -139,7 +148,6 @@ pub fn get_category_and_ranks(cards: &[Card]) -> (Category, Vec<u32>) {
 }
 
 pub struct Hand<'a> {
-    // cards: Vec<Card>,
     input: &'a str,
     category: Category,
     ranks: Vec<u32>,
@@ -150,7 +158,6 @@ impl<'a> Hand<'a> {
         let cards: Vec<Card> = input.split(" ").map(|s| Card::new(s)).collect();
         let (category, ranks) = get_category_and_ranks(&cards);
         Self {
-            // cards,
             input,
             category,
             ranks,
