@@ -304,7 +304,6 @@ fn calling_non_existing_word() {
 }
 
 #[test]
-#[ignore]
 fn multiple_definitions() {
     let mut f = Forth::new();
     assert!(f.eval(": one 1 ; : two 2 ; one two +").is_ok());
@@ -312,7 +311,6 @@ fn multiple_definitions() {
 }
 
 #[test]
-#[ignore]
 fn definitions_after_ops() {
     let mut f = Forth::new();
     assert!(f.eval("1 2 + : addone 1 + ; addone").is_ok());

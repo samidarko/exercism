@@ -17,7 +17,6 @@ pub enum Error {
     InvalidWord,
 }
 
-// TODO add this &str
 pub fn is_number(s: &str) -> bool {
     s.chars().all(|c| c.is_ascii_digit())
 }
@@ -42,7 +41,7 @@ impl Forth {
             fields.remove(0);
 
             if let Ok(value) = token.parse::<Value>() {
-                let _ = &self.stack.push(value);
+                self.stack.push(value);
                 continue;
             }
 
@@ -50,53 +49,52 @@ impl Forth {
             let fields_size = fields.len();
 
             match token.as_str() {
-                ":" if fields_size >= 3
-                    && !is_number(&fields[0])
-                    && &fields[fields_size - 1] == ";" =>
-                {
-                    // TODO see if we can do without cloning
-                    let stop = fields.len() - 1;
-                    let _ = &self
-                        .heap
-                        .insert(fields[0].clone(), fields[1..stop].to_vec().clone());
-                    fields = vec![]
+                ":" if fields_size >= 3 && !is_number(&fields[0]) => {
+                    if let Some(separator) = fields.iter().position(|s| *s == ";") {
+                        self.heap
+                            .insert(fields[0].clone(), fields[1..separator].to_vec().clone());
+                        fields = fields[separator + 1..].to_vec();
+                        if !fields.is_empty() {
+                            return self.eval(&fields.join(" "));
+                        }
+                    }
                 }
                 ":" => return Err(InvalidWord),
                 "drop" if stack_size > 0 => {
-                    let _ = &self.stack.pop();
+                    self.stack.pop();
                 }
                 "dup" if stack_size > 0 => {
-                    let _ = &self.stack.push(*self.stack.last().unwrap());
+                    self.stack.push(*self.stack.last().unwrap());
                 }
                 "over" if stack_size > 1 => {
-                    let (b, a) = (&self.stack.pop().unwrap(), &self.stack.pop().unwrap());
-                    let _ = &self.stack.push(*a);
-                    let _ = &self.stack.push(*b);
-                    let _ = &self.stack.push(*a);
+                    let (b, a) = (self.stack.pop().unwrap(), self.stack.pop().unwrap());
+                    self.stack.push(a);
+                    self.stack.push(b);
+                    self.stack.push(a);
                 }
                 "swap" if stack_size > 1 => {
-                    let (b, a) = (&self.stack.pop().unwrap(), &self.stack.pop().unwrap());
-                    let _ = &self.stack.push(*b);
-                    let _ = &self.stack.push(*a);
+                    let (b, a) = (self.stack.pop().unwrap(), self.stack.pop().unwrap());
+                    self.stack.push(b);
+                    self.stack.push(a);
                 }
                 "+" if stack_size > 1 => {
-                    let (b, a) = (&self.stack.pop().unwrap(), &self.stack.pop().unwrap());
-                    let _ = &self.stack.push(a + b);
+                    let (b, a) = (self.stack.pop().unwrap(), self.stack.pop().unwrap());
+                    self.stack.push(a + b);
                 }
                 "-" if stack_size > 1 => {
-                    let (b, a) = (&self.stack.pop().unwrap(), &self.stack.pop().unwrap());
-                    let _ = &self.stack.push(a - b);
+                    let (b, a) = (self.stack.pop().unwrap(), self.stack.pop().unwrap());
+                    self.stack.push(a - b);
                 }
                 "*" if stack_size > 1 => {
-                    let (b, a) = (&self.stack.pop().unwrap(), &self.stack.pop().unwrap());
-                    let _ = &self.stack.push(a * b);
+                    let (b, a) = (self.stack.pop().unwrap(), self.stack.pop().unwrap());
+                    self.stack.push(a * b);
                 }
                 "/" if stack_size > 1 => {
-                    let (b, a) = (&self.stack.pop().unwrap(), &self.stack.pop().unwrap());
-                    if *b == 0 {
+                    let (b, a) = (self.stack.pop().unwrap(), self.stack.pop().unwrap());
+                    if b == 0 {
                         return Err(DivisionByZero);
                     }
-                    let _ = &self.stack.push(a / b);
+                    self.stack.push(a / b);
                 }
                 _ if token.len() == 1 => return Err(StackUnderflow),
                 "drop" | "dup" | "over" | "swap" => return Err(StackUnderflow),
@@ -118,11 +116,8 @@ impl Forth {
                 continue;
             }
 
-            if let Some(values) = &self.heap.get(&token.to_string()) {
-                // TODO use concat
-                for value in values.into_iter() {
-                    result.push(value.to_string());
-                }
+            if let Some(values) = self.heap.get(&token.to_string()) {
+                result = [result, (*values).to_vec()].concat();
             } else {
                 result.push(token.to_string());
             }
