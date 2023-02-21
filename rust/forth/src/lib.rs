@@ -1,10 +1,9 @@
-use crate::Error::{DivisionByZero, StackUnderflow};
+use crate::Error::{DivisionByZero, InvalidWord, StackUnderflow, UnknownWord};
 use std::collections::HashMap;
 
 pub type Value = i32;
 pub type Result = std::result::Result<(), Error>;
 
-// #[derive(Clone)]
 pub struct Forth {
     stack: Vec<Value>,
     heap: HashMap<String, Vec<String>>,
@@ -48,10 +47,21 @@ impl Forth {
             }
 
             let stack_size = self.stack.len();
-            // let ultimate = stack_size - 1;
-            // let penultimate = ultimate - 1;
+            let fields_size = fields.len();
 
             match token.as_str() {
+                ":" if fields_size >= 3
+                    && !is_number(&fields[0])
+                    && &fields[fields_size - 1] == ";" =>
+                {
+                    // TODO see if we can do without cloning
+                    let stop = fields.len() - 1;
+                    let _ = &self
+                        .heap
+                        .insert(fields[0].clone(), fields[1..stop].to_vec().clone());
+                    fields = vec![]
+                }
+                ":" => return Err(InvalidWord),
                 "drop" if stack_size > 0 => {
                     let _ = &self.stack.pop();
                 }
@@ -88,29 +98,11 @@ impl Forth {
                     }
                     let _ = &self.stack.push(a / b);
                 }
-                _ => return Err(StackUnderflow),
+                _ if token.len() == 1 => return Err(StackUnderflow),
+                "drop" | "dup" | "over" | "swap" => return Err(StackUnderflow),
+                _ => return Err(UnknownWord),
             }
         }
-
-        // 			switch {
-        // 			case token == ":" && !isNumber(fields[0]):
-        // 				heap[fields[0]] = fields[1 : len(fields)-1]
-        // 				fields = nil
-        // 			case token == ":":
-        // 				return stack, errors.New("cannont redefine numbers")
-        // 			case stackSize == 0:
-        // 				return stack, errors.New("function requires at least one operands")
-        // 			case stackSize == 1:
-        // 				return stack, errors.New("function requires at least two operands")
-        // 			case token == "swap":
-        // 				stack[penultimate], stack[ultimate] = stack[ultimate], stack[penultimate]
-        // 			case token == "over":
-        // 				stack = append(stack, stack[penultimate])
-        // 			case stack[stackSize-1] == 0:
-        // 				return stack, errors.New("denominator is zero")
-        // 			case token == "/":
-        // 				stack = append(stack[:stackSize-2], stack[stackSize-2]/stack[stackSize-1])
-        // 			}
 
         Ok(())
     }
