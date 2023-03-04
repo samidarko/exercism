@@ -28,8 +28,6 @@ func Color(color string) int {
 }
 
 // Value should return the resistance value of a resistor with a given colors.
-func Value(colors []string) (value int) {
-	value += Color(colors[0]) * 10
-	value += Color(colors[1])
-	return
+func Value(colors []string) int {
+	return Color(colors[0])*10 + Color(colors[1])
 }
