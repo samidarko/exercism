@@ -16,12 +16,12 @@ func Answer(question string) (int, bool) {
 	var result int
 	var err error
 
-	if len(tokens) >= 1 {
-		result, err = strconv.Atoi(tokens[0])
-		if err != nil {
-			return 0, false
-		}
-	} else {
+	if len(tokens) == 0 {
+		return 0, false
+	}
+
+	result, err = strconv.Atoi(tokens[0])
+	if err != nil {
 		return 0, false
 	}
 
