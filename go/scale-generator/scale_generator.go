@@ -8,20 +8,6 @@ import (
 var flats = []string{"A", "Bb", "B", "C", "Db", "D", "Eb", "E", "F", "Gb", "G", "Ab"}
 var sharps = []string{"A", "A#", "B", "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#"}
 
-// parse is a sequence of intervals to absolute semitones above the tonic
-func parse(s string) []int {
-	if len(s) == 0 {
-		return []int{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11}
-	}
-	x := 0
-	var notes []int
-	for _, c := range s {
-		notes = append(notes, x)
-		x += map[rune]int{'m': 1, 'M': 2, 'A': 3}[c]
-	}
-	return notes
-}
-
 // tonicIndex the index of a tonic (as major or minor) in a list
 func tonicIndex(tonic string, chromatic []string) int {
 	for i := range chromatic {
@@ -33,21 +19,38 @@ func tonicIndex(tonic string, chromatic []string) int {
 }
 
 // Scale returns the list of notes in scale given by a tonic and a set of intervals
-func Scale(tonic, interval string) []string {
-	notes := parse(interval)
-	var out []string
-	var chromatic []string
+func Scale(tonic, intervals string) []string {
+	if len(intervals) == 0 {
+		intervals = "mmmmmmmmmmm"
+	}
+
+	var scale []string
+
 	switch tonic {
-	case "G", "D", "A", "E", "B", "F#", "e", "b", "f#", "c#", "g#", "d#":
-		chromatic = sharps
+	case "C", "G", "D", "A", "E", "F#", "e", "b", "f#", "c#", "g#", "d#", "a":
+		scale = sharps
 	case "F", "Bb", "Eb", "Ab", "Db", "Gb", "d", "g", "c", "f", "bb", "eb":
-		chromatic = flats
+		scale = flats
 	default:
-		chromatic = sharps
+		panic(fmt.Sprintf("invalid tonic: %s", tonic))
 	}
-	tonicI := tonicIndex(tonic, chromatic)
-	for i := range notes {
-		out = append(out, chromatic[(tonicI+notes[i])%12])
+
+	index := tonicIndex(tonic, scale)
+	notes := []string{scale[index]}
+
+	for _, interval := range intervals {
+		switch interval {
+		case 'm':
+			index += 1
+		case 'M':
+			index += 2
+		case 'A':
+			index += 3
+		default:
+			panic(fmt.Sprintf("invalid interval: %c", interval))
+		}
+		notes = append(notes, scale[index%len(scale)])
 	}
-	return out
+
+	return notes
 }
