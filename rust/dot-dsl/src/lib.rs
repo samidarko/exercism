@@ -3,19 +3,12 @@ pub mod graph {
     use crate::graph::graph_items::node::Node;
     use std::collections::HashMap;
 
-    // pub trait Attr {
-    //     fn get_attrs(self) -> HashMap<String, String>;
-    //     fn attr(&self, name: &str) -> Option<&str> {
-    //         self.get_attrs().get(name).map(String::as_str)
-    //     }
-    // }
-
     pub mod graph_items {
 
         pub mod edge {
             use std::collections::HashMap;
 
-            #[derive(Clone, PartialEq, Debug, Default)]
+            #[derive(Clone, PartialEq, Eq, Debug, Default)]
             pub struct Edge<'a> {
                 start: &'a str,
                 end: &'a str,
@@ -32,13 +25,10 @@ pub mod graph {
                 pub fn with_attrs(self, attrs: &[(&'a str, &'a str)]) -> Self {
                     let attrs = HashMap::from_iter(
                         attrs
-                            .into_iter()
+                            .iter()
                             .map(|(name, value)| (name.to_string(), value.to_string())),
                     );
-                    Self {
-                        attrs,
-                        ..self
-                    }
+                    Self { attrs, ..self }
                 }
 
                 pub fn attr(&self, name: &'a str) -> Option<&str> {
@@ -49,7 +39,7 @@ pub mod graph {
         pub mod node {
             use std::collections::HashMap;
 
-            #[derive(Clone, PartialEq, Debug, Default)]
+            #[derive(Clone, PartialEq, Eq, Debug, Default)]
             pub struct Node<'a> {
                 pub(crate) name: &'a str,
                 pub(crate) attrs: HashMap<String, String>,
@@ -64,13 +54,10 @@ pub mod graph {
                 pub fn with_attrs(self, attrs: &[(&'a str, &'a str)]) -> Self {
                     let attrs = HashMap::from_iter(
                         attrs
-                            .into_iter()
+                            .iter()
                             .map(|(name, value)| (name.to_string(), value.to_string())),
                     );
-                    Self {
-                        attrs,
-                        ..self
-                    }
+                    Self { attrs, ..self }
                 }
 
                 pub fn attr(&self, name: &'a str) -> Option<&str> {
@@ -78,12 +65,6 @@ pub mod graph {
                 }
             }
         }
-        // impl Attr for Node {
-        //     // fn get_attrs<'a>(&self) -> Vec<(&'a str, &'a str)>;
-        //     fn get_attrs(self) -> Vec<(&'a str, &'a str)> {
-        //         self.attrs
-        //     }
-        // }
     }
     #[derive(Default)]
     pub struct Graph<'a> {
@@ -114,7 +95,7 @@ pub mod graph {
         pub fn with_attrs(self, attrs: &[(&'a str, &'a str)]) -> Self {
             let attrs = HashMap::from_iter(
                 attrs
-                    .into_iter()
+                    .iter()
                     .map(|(name, value)| (name.to_string(), value.to_string())),
             );
             Self { attrs, ..self }
