@@ -1,12 +1,10 @@
 pub fn egg_count(display_value: u32) -> usize {
-    let mut value = display_value;
+    let mut value = display_value as usize;
     let mut result: usize = 0;
 
     while value > 0 {
-        if value & 1 == 1 {
-            result += 1;
-        }
-        value = value >> 1;
+        result += value & 1;
+        value >>= 1;
     }
     result
 }
