@@ -7,43 +7,43 @@ import (
 )
 
 // Matrix type
-type Matrix struct {
-	data []int
-	rows int
-	cols int
-}
+type Matrix [][]int
 
 // New returns a new Matrix if no error
-func New(s string) (*Matrix, error) {
-	rows := strings.Split(s, "\n")
+func New(input string) (Matrix, error) {
+	split := strings.Split(input, "\n")
 	var matrix Matrix
-	matrix.rows = len(rows)
-	for i, row := range rows {
-		values := strings.Split(strings.TrimSpace(row), " ")
+	n := 0
+	for i, s := range split {
+		values := strings.Split(strings.TrimSpace(s), " ")
 		if i == 0 {
-			matrix.cols = len(values)
+			n = len(values)
 		}
-		if i > 0 && len(values) != matrix.cols {
-			return nil, fmt.Errorf("uneven rows")
+		if i > 0 && len(values) != n {
+			return nil, fmt.Errorf("bad number of columns")
 		}
-		for _, sValue := range values {
+		row := make([]int, n)
+		for j, sValue := range values {
 			value, err := strconv.Atoi(sValue)
 			if err != nil {
 				return nil, err
 			}
-			matrix.data = append(matrix.data, value)
+			row[j] = value
 		}
+		matrix = append(matrix, row)
 	}
-	return &matrix, nil
+	return matrix, nil
 }
 
 // Cols must return the results without affecting the matrix.
-func (m *Matrix) Cols() [][]int {
-	cols := make([][]int, m.cols)
-	for c := 0; c < m.cols; c++ {
-		col := make([]int, m.rows)
-		for r := 0; r < m.rows; r++ {
-			col[r] = m.data[c+r*m.cols]
+func (matrix Matrix) Cols() [][]int {
+	m := len(matrix)
+	n := len(matrix[0])
+	cols := make([][]int, n)
+	for c := 0; c < n; c++ {
+		col := make([]int, m)
+		for r := 0; r < m; r++ {
+			col[r] = matrix[r][c]
 		}
 		cols[c] = col
 	}
@@ -51,12 +51,14 @@ func (m *Matrix) Cols() [][]int {
 }
 
 // Rows must return the results without affecting the matrix.
-func (m *Matrix) Rows() [][]int {
-	rows := make([][]int, m.rows)
-	for r := 0; r < m.rows; r++ {
-		row := make([]int, m.cols)
-		for c := 0; c < m.cols; c++ {
-			row[c] = m.data[r*m.cols+c]
+func (matrix Matrix) Rows() [][]int {
+	m := len(matrix)
+	n := len(matrix[0])
+	rows := make([][]int, m)
+	for r := 0; r < m; r++ {
+		row := make([]int, n)
+		for c := 0; c < n; c++ {
+			row[c] = matrix[r][c]
 		}
 		rows[r] = row
 	}
@@ -64,11 +66,12 @@ func (m *Matrix) Rows() [][]int {
 }
 
 // Set must set a new value
-func (m *Matrix) Set(row, col, val int) bool {
-	if row < 0 || col < 0 || row >= m.rows || col >= m.cols {
+func (matrix Matrix) Set(row, col, val int) bool {
+	m := len(matrix)
+	n := len(matrix[0])
+	if row < 0 || col < 0 || row >= m || col >= n {
 		return false
 	}
-	position := row*m.cols + col
-	m.data[position] = val
+	matrix[row][col] = val
 	return true
 }
