@@ -18,11 +18,7 @@ type Character struct {
 
 // Modifier calculates the ability modifier for a given ability score
 func Modifier(score int) int {
-	value := float64(score-10) / 2
-	if value < 0 {
-		return int(math.Round(value))
-	}
-	return int(math.Floor(value*100) / 100)
+	return int(math.Floor(float64(score-10) / 2.0))
 }
 
 // Ability uses randomness to generate the score for an ability
@@ -51,8 +47,7 @@ func GenerateCharacter() Character {
 		Charisma:     Ability(),
 	}
 
-	hitPoints := 10 + Modifier(character.Constitution)
-	character.Hitpoints = hitPoints
+	character.Hitpoints = 10 + Modifier(character.Constitution)
 
 	return character
 }
