@@ -5,7 +5,7 @@ pub struct Item {
     pub value: usize,
 }
 
-pub fn maximum_value(max_weight: usize, items: Vec<Item>) -> u32 {
+pub fn maximum_value(max_weight: usize, items: &[Item]) -> u32 {
     let mut dp = vec![0usize; max_weight + 1];
 
     for i in 1..=items.len() {
